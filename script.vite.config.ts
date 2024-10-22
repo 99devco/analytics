@@ -14,13 +14,13 @@ export default defineConfig({
       // Could also be a dictionary or array of multiple entry points
       // entry: resolve(__dirname, 'src/analytics.ts'),
       entry: {
-        "analytics": resolve(__dirname, 'src/analytics.ts'),
+        "analytics": resolve(__dirname, 'src/analytics-script.ts'),
       },
       name: "analytics",
-      formats: ["es", "umd"],
+      formats: ["iife"],
       // the proper extensions will be added
       fileName (format, name) {
-        return `${name}.${format}.js`;
+        return `${name}.js`;
       },
     },
     emptyOutDir: false,

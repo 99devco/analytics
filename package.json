@@ -1,32 +1,32 @@
 {
   "name": "@99devco/analytics",
   "description": "A lightweight JavaScript library for tracking and reporting web browser interactions. Part of the 99dev suite of no-frills web services.",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "private": false,
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
   "files": ["/dist"],
-  "main": "dist/99dev.umd.cjs",
-  "module": "dist/99dev.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/analytics.js",
+  "module": "dist/analytics.es.js",
+  "types": "dist/analytics.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/99dev.js"
+        "types": "./dist/analytics.d.ts",
+        "default": "./dist/analytics.es.js"
       },
       "require": {
-        "types": "./dist/index.d.ts",
-        "default":"./dist/99dev.umd.cjs"
+        "types": "./dist/analytics.d.ts",
+        "default":"./dist/analytics.umd.js"
       }
     }
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && vite build -c script.vite.config.ts",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },

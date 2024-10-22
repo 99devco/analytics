@@ -1,6 +1,6 @@
 # 99dev Analytics
 
-![99dev logo](public/99dev_banner.jpg)
+<!-- ![99dev logo](./public/99dev_banner.jpg) -->
 
 **99dev** is a suite of no-frills web services designed for indie makers and small-scale projects. We offer simple and affordable tools, starting at just $1 a month. With **99dev Analytics**, you can track website metrics and interactions effortlessly. Start for free and pay as your needs grow.
 
@@ -26,24 +26,13 @@ Import into your project:
 import * as analytics from '@99devco/analytics';
 ```
 
-### CJS Module
+### UMD
 
 ```javascript
 const analytics = require('@99devco/analytics');
 ```
 
-### UMD
-
-Include the UMD build via a script tag:
-
-```html
-<script src="https://cdn.your-url.com/@99devco/analytics.umd.js"></script>
-<script>
-  const analytics = window.Analytics;
-</script>
-```
-
-### CDN
+### Script or CDN
 
 Install via CDN:
 

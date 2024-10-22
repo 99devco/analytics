@@ -1,12 +1,12 @@
 export interface AnalyticsConfig {
   uuid: string,
-  nav_type: "history" | "hash",
+  nav_type: "history" | "hash" | "natural",
   api_url: string,
 }
 
 let config:AnalyticsConfig = {
   uuid: "",
-  nav_type: "history",
+  nav_type: "natural",
   api_url: "https://api.99.dev",
 };
 
