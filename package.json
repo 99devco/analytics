@@ -1,7 +1,7 @@
 {
   "name": "@99dev/analytics",
   "description": "A lightweight JavaScript library for tracking and reporting web browser interactions. Part of the 99dev suite of no-frills web services.",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "private": false,
   "type": "module",
   "files": ["dist"],
