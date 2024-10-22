@@ -11,7 +11,12 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
+
+    /* Emit settings for declarations */
+    "declaration": true,                // Generate .d.ts files
+    "declarationDir": "./dist",         // Output directory for .d.ts files
+    "emitDeclarationOnly": true,        // Only emit declaration files
+    "outDir": "./dist",                 // Output directory for JS and .d.ts files
 
     /* Linting */
     "strict": true,
@@ -19,5 +24,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

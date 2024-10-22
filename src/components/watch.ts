@@ -5,12 +5,8 @@ import recordView from "./record-view";
 
 const unwatchers:Array<()=>any> = [];
 
-export default function watch(skipNow = false):any {
+export default function watch():any {
   const { nav_type } = getConfig();
-
-  if (!skipNow) {
-    recordView();
-  }
 
   if (nav_type === "hash") {
     // Capture the current URL to use as the referrer later
