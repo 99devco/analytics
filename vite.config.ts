@@ -17,5 +17,6 @@ export default defineConfig({
       // the proper extensions will be added
       fileName: '99dev',
     },
+    emptyOutDir: false,
   },
 })

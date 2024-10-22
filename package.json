@@ -16,7 +16,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
