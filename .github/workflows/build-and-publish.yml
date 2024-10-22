@@ -6,7 +6,7 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,18 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Check if NPM_TOKEN is present
+        run: |
+          if [ -n "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN is set."
+          else
+            echo "NPM_TOKEN is missing."
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
