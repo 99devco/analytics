@@ -11,9 +11,7 @@ type InitOptions = Partial<AnalyticsConfig> & {
 }
 
 // The main "init" function
-export default function init (uuid:string, options?:InitOptions):any {
-  //TODO: improve these type definitions!
-
+export default function init (uuid:string, options?:InitOptions):void {
   // unpack the options for fine grain control
   const settings:InitOptions = { uuid };
   if (options) {
@@ -28,9 +26,4 @@ export default function init (uuid:string, options?:InitOptions):any {
   if (options && !options.dontRecordView) {
     recordView();
   }
-
-  //TODO: This function, and not "watch", should make the first call to recordView.
-
-  // @ts-ignore
-  return this;
 }

@@ -5,7 +5,7 @@ import recordView from "./record-view";
 
 const unwatchers:Array<()=>any> = [];
 
-export default function watch():any {
+export default function watch():void {
   const { nav_type } = getConfig();
 
   if (nav_type === "hash") {
@@ -23,9 +23,6 @@ export default function watch():any {
   } else if (nav_type === "history") {
     throw new Error(`TODO: Implement the history watch functionality`);
   }
-
-  // @ts-ignore
-  return this;
 }
 
 export const unwatch = function () {
