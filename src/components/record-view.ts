@@ -12,7 +12,7 @@ export default function recordView (url?:string, referrer?:string):void {
   trkpxl.setAttribute("aria-hidden", "true");
   trkpxl.style.position = "absolute";
   trkpxl.src = encodeURI(`${api_url}/mian/${uuid}/tpxl.gif?${objToQps({
-    _url,
+    url: _url,
     referrer: referrer || getReferrer(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     pcount: getPCount(),
