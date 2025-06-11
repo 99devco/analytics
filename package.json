@@ -12,28 +12,26 @@
     "access": "public"
   },
   "type": "module",
+  "browser": "./dist/analytics.es.js",
   "files": [
     "/dist"
   ],
-  "main": "dist/analytics.js",
-  "module": "dist/analytics.es.js",
-  "types": "dist/analytics.d.ts",
+  "main": "./dist/analytics.umd.js",
+  "module": "./dist/analytics.es.js",
+  "types": "./dist/analytics.d.ts",
   "exports": {
-    "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types": "./dist/analytics.d.ts",
-        "default": "./dist/analytics.es.js"
-      },
-      "require": {
-        "types": "./dist/analytics.d.ts",
-        "default": "./dist/analytics.umd.js"
-      }
-    }
+      "types": "./dist/analytics.d.ts",
+      "import": "./dist/analytics.es.js",
+      "require": "./dist/analytics.umd.js",
+      "browser": "./dist/analytics.es.js",
+      "default": "./dist/analytics.es.js"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && vite build -c script.vite.config.ts",
+    "build": "rimraf dist && tsc && vite build && vite build -c script.vite.config.ts",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
     "docs": "typedoc --options typedoc-markdown.js",
@@ -42,6 +40,7 @@
   "author": "99dev",
   "license": "MIT",
   "devDependencies": {
+    "rimraf": "^5.0.10",
     "typedoc": "^0.28.5",
     "typedoc-plugin-markdown": "^4.6.4",
     "typescript": "^5.5.3",

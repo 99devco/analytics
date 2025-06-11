@@ -5,6 +5,13 @@
 // Include our external dependencies!
 import * as analytics from "./analytics";
 
+// Declare the global type
+declare global {
+  interface Window {
+    nndev: typeof analytics;
+  }
+}
+
 // Read properties from the script import
 const script = document.currentScript || document.querySelector("script[src*='99dev'][data-site-uuid]");
 const uuid = script?.getAttribute("data-site-uuid") || "";
