@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -11,18 +11,19 @@ export default defineConfig({
   },
   build: {
     lib: {
-      // Could also be a dictionary or array of multiple entry points
-      // entry: resolve(__dirname, 'src/analytics.ts'),
-      entry: {
-        "analytics": resolve(__dirname, 'src/analytics-script.ts'),
-      },
+      entry: resolve(__dirname, 'src/analytics-script.ts'),
       name: "analytics",
       formats: ["iife"],
-      // the proper extensions will be added
-      fileName (format, name) {
-        return `${name}.js`;
-      },
+      fileName: () => 'analytics.js'
+    },
+    rollupOptions: {
+      output: {
+        extend: true,
+        globals: {}
+      }
     },
     emptyOutDir: false,
+    outDir: 'dist',
+    sourcemap: true
   },
 })

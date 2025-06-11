@@ -1,43 +1,48 @@
 {
   "name": "@99devco/analytics",
-  "description": "A lightweight JavaScript library for tracking and reporting web browser interactions. Part of the 99dev suite of no-frills web services.",
-  "version": "0.2.1",
+  "description": "A privacy and security focused Typescript/JavaScript library for tracking website traffic for only $1 per month.",
+  "version": "1.0.0",
   "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/99devco/analytics.git"
   },
+  "homepage": "https://99.dev",
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
-  "files": ["/dist"],
-  "main": "dist/analytics.js",
-  "module": "dist/analytics.es.js",
-  "types": "dist/analytics.d.ts",
+  "browser": "./dist/analytics.es.js",
+  "files": [
+    "/dist"
+  ],
+  "main": "./dist/analytics.umd.js",
+  "module": "./dist/analytics.es.js",
+  "types": "./dist/analytics.d.ts",
   "exports": {
-    "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types": "./dist/analytics.d.ts",
-        "default": "./dist/analytics.es.js"
-      },
-      "require": {
-        "types": "./dist/analytics.d.ts",
-        "default":"./dist/analytics.umd.js"
-      }
-    }
+      "types": "./dist/analytics.d.ts",
+      "import": "./dist/analytics.es.js",
+      "require": "./dist/analytics.umd.js",
+      "browser": "./dist/analytics.es.js",
+      "default": "./dist/analytics.es.js"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && vite build -c script.vite.config.ts",
+    "build": "rimraf dist && tsc && vite build && vite build -c script.vite.config.ts",
     "preview": "vite preview",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "docs": "typedoc --options typedoc-markdown.js",
+    "docs:html": "typedoc --options typedoc-html.js"
   },
   "author": "99dev",
   "license": "MIT",
-  "dependencies": { },
   "devDependencies": {
+    "rimraf": "^5.0.10",
+    "typedoc": "^0.28.5",
+    "typedoc-plugin-markdown": "^4.6.4",
     "typescript": "^5.5.3",
     "vite": "^5.4.8"
   }

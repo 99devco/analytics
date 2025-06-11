@@ -1,5 +1,6 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
+import type { PreRenderedAsset } from 'rollup'
 
 export default defineConfig({
   server: {
@@ -11,18 +12,23 @@ export default defineConfig({
   },
   build: {
     lib: {
-      // Could also be a dictionary or array of multiple entry points
-      // entry: resolve(__dirname, 'src/analytics.ts'),
-      entry: {
-        "analytics": resolve(__dirname, 'src/analytics.ts'),
-      },
+      entry: resolve(__dirname, 'src/analytics.ts'),
       name: "analytics",
       formats: ["es", "umd"],
-      // the proper extensions will be added
-      fileName (format, name) {
-        return `${name}.${format}.js`;
-      },
+      fileName: (format) => `analytics.${format}.js`
     },
-    emptyOutDir: false,
+    rollupOptions: {
+      external: [],
+      output: {
+        globals: {},
+        assetFileNames: (assetInfo: PreRenderedAsset) => {
+          if (assetInfo.name === 'style.css') return 'analytics.css';
+          return assetInfo.name || 'unknown';
+        }
+      }
+    },
+    emptyOutDir: true,
+    outDir: 'dist',
+    sourcemap: true
   },
 })

@@ -1,12 +1,12 @@
 # 99dev Analytics
 
-<!-- ![99dev logo](./public/99dev_banner.jpg) -->
+![99dev logo](./images/99dev_logo_350x183.jpg)
 
-**99dev** is a suite of no-frills web services designed for indie makers and small-scale projects. We offer simple and affordable tools, starting at just $1 a month. With **99dev Analytics**, you can track website metrics and interactions effortlessly. Start for free and pay as your needs grow.
+**99dev** provides privacy and security focused web traffic analytics for only $1 per month. No pricing tiers, no fenced off premium features, and no misleading fractional pricing. Pay for what you use and _only_ what you use. No charge for up to 5 months.
 
 ## Getting Started
 
-You can play around with 99dev analytics on the [demo page](https://demo.99.dev).
+You can play around with 99dev analytics on the [live demo page](https://demo.99.dev).
 
 When you're ready to track your own sites, risk free, [create an account](https://app.99.dev/#/account-creation) and install the snippet using the instructions below.
 
@@ -37,13 +37,13 @@ const analytics = require('@99devco/analytics');
 Install via CDN:
 
 ```html
-<script src="https://cdn.99.dev/99dev.js"></script>
+<script src="https://cdn.99.dev/analytics.js"></script>
 <script>
-  const analytics = window.Analytics;
+  const analytics = window.nndev;
 </script>
 ```
 
-## Usage Example
+## Basic Usage Example
 
 You must initialize the package with your site's `uuid`. By default, this will record a page view. On a traditional static website, this is all you need.
 
@@ -51,25 +51,21 @@ You must initialize the package with your site's `uuid`. By default, this will r
 analytics.init("your-uuid-goes-here");
 ```
 
-To use hash navigation, pass the `nav_type:"hash"` parameter and _watch_ the hash changes.
+To use hash navigation, pass the `navType:"hash"` parameter and _watch_ the hash changes.
 
 ```javascript
-analytics.init("your-uuid-goes-here", {nav_type:"hash").watch();
+analytics.init({uuid:"your-uuid-goes-here", navType:"hash"}).watch();
 ```
 
 ## Advanced Usage
 
-See the [official 99dev documentation page](https://99.dev/docs/) for further details about supported metas, canonicals, etc.
+See the [official 99dev documentation page](https://99.dev/docs?umd_source=npmjs.com) for further details about cybersecurity, metas, canonicals, etc.
 
 ## API
 
-See this repository's Typescript definitions for details.
+The 99dev analytics snippet is built with Typescript and includes type definitions throughout.
 
-- **`init(uuid:string, options?:{})`**: Tracks when a page is viewed.
-
-- **`recordView(url?:string, referrer?:string)`**: Tracks the current or specified page.
-
-- **`watch(options?:{})`**: Monitors the specified navigation mechanism for changes.
+Typescript/Javascript API docs (via Typedocs) are available here - https://99devco.github.io/analytics/modules/analytics.html
 
 ## Contributing
 

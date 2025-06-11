@@ -1,5 +1,17 @@
-// Include our external dependencies!
-import { init, watch } from "./analytics";
+/*
 
-init("some-uuid-goes-here", {nav_type:"hash"});
-watch();
+This file contains a minimal example of how to use the ESM modules and entry
+point for testing via the `npm run-script dev` command.
+
+It is NOT intended to be used as part of the actual 99dev analytics package.
+
+*/
+
+// Include our external dependencies!
+import * as analytics from "./analytics";
+
+analytics.init({
+  uuid:"some-uuid-goes-here",
+  navType:"hash",
+  apiUrl:"https://99dev-proxy.yourdomain.com"
+}).watch();
