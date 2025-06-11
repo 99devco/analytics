@@ -2,7 +2,7 @@
 
 ![99dev logo](./images/99dev_logo_350x183.jpg)
 
-**99dev** provides privacy and security focused web traffic analytics for only $1 per month. No pricing tiers, no fenced off premium features, and no misleading fractional pricing.
+**99dev** provides privacy and security focused web traffic analytics for only $1 per month. No pricing tiers, no fenced off premium features, and no misleading fractional pricing. Pay for what you use and _only_ what you use. No charge for up to 5 months.
 
 ## Getting Started
 
@@ -39,11 +39,11 @@ Install via CDN:
 ```html
 <script src="https://cdn.99.dev/analytics.js"></script>
 <script>
-  const analytics = window.Analytics;
+  const analytics = window.nndev;
 </script>
 ```
 
-## Usage Example
+## Basic Usage Example
 
 You must initialize the package with your site's `uuid`. By default, this will record a page view. On a traditional static website, this is all you need.
 
@@ -51,10 +51,10 @@ You must initialize the package with your site's `uuid`. By default, this will r
 analytics.init("your-uuid-goes-here");
 ```
 
-To use hash navigation, pass the `nav_type:"hash"` parameter and _watch_ the hash changes.
+To use hash navigation, pass the `navType:"hash"` parameter and _watch_ the hash changes.
 
 ```javascript
-analytics.init("your-uuid-goes-here", {nav_type:"hash").watch();
+analytics.init({uuid:"your-uuid-goes-here", navType:"hash"}).watch();
 ```
 
 ## Advanced Usage
