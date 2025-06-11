@@ -23,14 +23,14 @@ import objToQps from "./obj-to-qps";
  */
 export function recordView (url?:string, referrer?:string):void {
   const _url = url || getURL();
-  const { uuid, api_url } = getConfig();
+  const { uuid, apiUrl } = getConfig();
 
   // Load the tracking pixel / send the analytics event
   const trkpxl = document.createElement("img");
   trkpxl.setAttribute("alt", "");
   trkpxl.setAttribute("aria-hidden", "true");
   trkpxl.style.position = "absolute";
-  trkpxl.src = encodeURI(`${api_url}/mian/${uuid}/tpxl.gif?${objToQps({
+  trkpxl.src = encodeURI(`${apiUrl}/mian/${uuid}/tpxl.gif?${objToQps({
     url: _url,
     referrer: referrer || getReferrer(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,

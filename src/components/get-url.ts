@@ -27,7 +27,7 @@ import { getConfig } from "./config";
  * ```
  */
 export default function getURL() {
-  const { nav_type } = getConfig();
+  const { navType } = getConfig();
 
   // Handle 99dev Page Meta
   const metaTag:HTMLMetaElement|null = document.querySelector('meta[name="99dev-page"]');
@@ -40,7 +40,7 @@ export default function getURL() {
       return canonicalLink.href.replace(window.location.origin,"");
 
   // Handle Hash
-  if (nav_type === "hash")
+  if (navType === "hash")
     return window.location.hash.substring(1).split("?")[0]; // Drop the leading "#" and any query parameters
 
   // Default - Natural navigation

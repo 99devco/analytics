@@ -14,8 +14,14 @@ import { recordView } from "./record-view";
  * @public
  */
 export interface InitOptions extends Partial<AnalyticsConfig> {
-  /** If true, prevents recording the initial page view */
-  dontRecordView?: boolean;
+  /** If false, prevents recording the initial page view. Default is true. */
+  recordView?: boolean;
+
+  /** The API URL to record traffic to. Default is https://api.99.dev. */
+  apiUrl?: string;
+
+  /** The navigation type to use. Default is 'natural'. */
+  navType?: "hash" | "history" | "natural";
 }
 
 /**
@@ -31,25 +37,28 @@ export interface InitOptions extends Partial<AnalyticsConfig> {
  * 
  * // With custom options
  * init('your-site-uuid', {
- *   api_url: 'https://custom-api.99.dev',
- *   nav_type: 'hash',
- *   dontRecordView: true
+ *   apiUrl: 'https://99dev-proxy.yourdomain.com',
+ *   navType: 'hash',
+ *   recordView: false,
  * });
  * ```
  */
-export function init (uuid:string, options?:InitOptions):void {
+export function init (uuid:string, options?:InitOptions):any {
   // unpack the options for fine grain control
-  const settings:InitOptions = { uuid };
+  const settings = { uuid };
   if (options) {
-    if (options.nav_type) settings.nav_type = options.nav_type;
-    if (options.api_url) settings.api_url = options.api_url;
+    if (options.navType) settings.navType = options.navType;
+    if (options.apiUrl) settings.apiUrl = options.apiUrl;
   }
 
   // cache the config values
   setConfig(settings);
 
   // record the current page, unless the options toggle it off
-  if (options && !options.dontRecordView) {
+  if (options && options.recordView != false) {
     recordView();
   }
+
+  // @ts-ignore
+  return this; // this is a hack to allow chaining of methods
 }
