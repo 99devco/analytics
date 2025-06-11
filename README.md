@@ -1,6 +1,6 @@
 # 99dev Analytics
 
-![99dev logo](./public/99dev_logo_350x183.jpg)
+![99dev logo](./images/99dev_logo_350x183.jpg)
 
 **99dev** provides privacy and security focused web traffic analytics for only $1 per month. No pricing tiers, no fenced off premium features, and no misleading fractional pricing.
 
