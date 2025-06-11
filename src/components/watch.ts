@@ -5,7 +5,7 @@
 // Include external dependencies
 import { getConfig } from "./config";
 import getURL from "./get-url";
-import recordView from "./record-view";
+import { recordView } from "./record-view";
 
 /** Array of cleanup functions for event listeners */
 const unwatchers:Array<()=>any> = [];
@@ -22,7 +22,7 @@ const unwatchers:Array<()=>any> = [];
  * 
  * @throws {Error} If navigation type is 'history' (not yet implemented)
  */
-export default function watch():void {
+export function watch():void {
   const { nav_type } = getConfig();
 
   if (nav_type === "hash") {

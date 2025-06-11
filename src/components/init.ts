@@ -7,7 +7,7 @@ import {
   setConfig,
   type AnalyticsConfig
 } from "./config";
-import recordView from "./record-view";
+import { recordView } from "./record-view";
 
 /**
  * Configuration options for initializing the analytics library.
@@ -37,7 +37,7 @@ export interface InitOptions extends Partial<AnalyticsConfig> {
  * });
  * ```
  */
-export default function init (uuid:string, options?:InitOptions):void {
+export function init (uuid:string, options?:InitOptions):void {
   // unpack the options for fine grain control
   const settings:InitOptions = { uuid };
   if (options) {

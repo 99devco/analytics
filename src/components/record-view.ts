@@ -21,7 +21,7 @@ import objToQps from "./obj-to-qps";
  * recordView('https://example.com/page', 'https://example.com');
  * ```
  */
-export default function recordView (url?:string, referrer?:string):void {
+export function recordView (url?:string, referrer?:string):void {
   const _url = url || getURL();
   const { uuid, api_url } = getConfig();
 

@@ -1,20 +1,11 @@
 /**
- * @99devco/analytics
+ * @module @99devco/analytics
+ * @packageDocumentation
+ * 
  * A lightweight JavaScript library for tracking and reporting web browser interactions.
  * 
- * @packageDocumentation
- */
-
-// Include our external dependencies
-import init from "./components/init";
-import recordView from "./components/record-view";
-import watch, { unwatch } from "./components/watch";
-
-/**
- * Core exports for the analytics library.
- * 
  * @example
- * ```typescript
+ * ```ts
  * import { init, recordView, watch, unwatch } from '@99devco/analytics';
  * 
  * // Initialize the analytics
@@ -30,4 +21,7 @@ import watch, { unwatch } from "./components/watch";
  * unwatch();
  * ```
  */
-export { init, recordView, watch, unwatch };
+
+export * from "./components/init";
+export * from "./components/record-view";
+export * from "./components/watch";

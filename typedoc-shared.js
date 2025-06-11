@@ -1,6 +1,6 @@
 // typedoc-shared.js
 export default {
-  entryPoints: ["src/analytics.ts"],
+  entryPoints: ["src/analytics.ts", "src/components/**/*.ts"],
   excludePrivate: true,
   excludeProtected: true,
   excludeExternals: true,
@@ -21,5 +21,5 @@ export default {
   validation: {
     invalidLink: true,
     notExported: true
-  }
+  },
 }; 
