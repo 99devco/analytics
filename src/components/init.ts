@@ -1,3 +1,7 @@
+/**
+ * @category Core
+ */
+
 // Include external dependencies
 import {
   setConfig,
@@ -5,12 +9,34 @@ import {
 } from "./config";
 import recordView from "./record-view";
 
-// Typescript definitions
-type InitOptions = Partial<AnalyticsConfig> & {
-  dontRecordView?: boolean
+/**
+ * Configuration options for initializing the analytics library.
+ * @public
+ */
+export interface InitOptions extends Partial<AnalyticsConfig> {
+  /** If true, prevents recording the initial page view */
+  dontRecordView?: boolean;
 }
 
-// The main "init" function
+/**
+ * Initializes the analytics library with the provided site UUID and options.
+ * 
+ * @param uuid - The unique identifier for your site
+ * @param options - Optional configuration settings
+ * 
+ * @example
+ * ```typescript
+ * // Basic initialization
+ * init('your-site-uuid');
+ * 
+ * // With custom options
+ * init('your-site-uuid', {
+ *   api_url: 'https://custom-api.99.dev',
+ *   nav_type: 'hash',
+ *   dontRecordView: true
+ * });
+ * ```
+ */
 export default function init (uuid:string, options?:InitOptions):void {
   // unpack the options for fine grain control
   const settings:InitOptions = { uuid };

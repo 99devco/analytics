@@ -1,7 +1,26 @@
+/**
+ * @category Core
+ */
+
 import { getConfig } from "./config";
 import getURL from "./get-url";
 import objToQps from "./obj-to-qps";
 
+/**
+ * Records a page view in the analytics system.
+ * 
+ * @param url - Optional URL to record. If not provided, the current page URL will be used
+ * @param referrer - Optional referrer URL. If not provided, the document referrer will be used
+ * 
+ * @example
+ * ```typescript
+ * // Record current page view
+ * recordView();
+ * 
+ * // Record specific URL and referrer
+ * recordView('https://example.com/page', 'https://example.com');
+ * ```
+ */
 export default function recordView (url?:string, referrer?:string):void {
   const _url = url || getURL();
   const { uuid, api_url } = getConfig();
@@ -26,13 +45,20 @@ export default function recordView (url?:string, referrer?:string):void {
   document.body.appendChild(trkpxl);
 }
 
-// Local Private Functions
+/**
+ * Gets the referrer path relative to the current origin
+ * @private
+ */
 function getReferrer():string {
   const split = window.document.referrer.split(window.location.origin);
   console.log(split[split.length-1]);
   return split[split.length-1] || "";
 }
 
+/**
+ * Gets and increments the page view count for the current session
+ * @private
+ */
 function getPCount():number {
   const pcount = parseInt(sessionStorage.getItem("99pcount") || "") || 1;
   sessionStorage.setItem("99pcount", (pcount+1).toString())

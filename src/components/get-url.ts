@@ -1,6 +1,31 @@
+/**
+ * @category Utilities
+ */
+
 // Include external dependencies
 import { getConfig } from "./config";
 
+/**
+ * Gets the current page URL based on navigation type and available meta information.
+ * The function follows this priority order:
+ * 1. 99dev page meta tag
+ * 2. Canonical link
+ * 3. Hash navigation (if enabled)
+ * 4. Natural navigation (default)
+ * 
+ * @returns The current page URL path (without origin)
+ * 
+ * @example
+ * ```typescript
+ * // With meta tag
+ * // <meta name="99dev-page" content="https://example.com/about">
+ * getURL(); // returns "/about"
+ * 
+ * // With hash navigation
+ * // URL: https://example.com/#/products
+ * getURL(); // returns "/products"
+ * ```
+ */
 export default function getURL() {
   const { nav_type } = getConfig();
 

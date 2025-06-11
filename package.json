@@ -7,11 +7,14 @@
     "type": "git",
     "url": "https://github.com/99devco/analytics.git"
   },
+  "homepage": "https://99.dev",
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
-  "files": ["/dist"],
+  "files": [
+    "/dist"
+  ],
   "main": "dist/analytics.js",
   "module": "dist/analytics.es.js",
   "types": "dist/analytics.d.ts",
@@ -24,7 +27,7 @@
       },
       "require": {
         "types": "./dist/analytics.d.ts",
-        "default":"./dist/analytics.umd.js"
+        "default": "./dist/analytics.umd.js"
       }
     }
   },
@@ -32,12 +35,16 @@
     "dev": "vite",
     "build": "tsc && vite build && vite build -c script.vite.config.ts",
     "preview": "vite preview",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "docs": "typedoc --options typedoc-markdown.js",
+    "docs:html": "typedoc --options typedoc-html.js"
   },
   "author": "99dev",
   "license": "MIT",
-  "dependencies": { },
   "devDependencies": {
+    "typedoc": "^0.28.5",
+    "typedoc-plugin-markdown": "^4.6.4",
+    "typedoc-unhoax-theme": "^0.5.3",
     "typescript": "^5.5.3",
     "vite": "^5.4.8"
   }

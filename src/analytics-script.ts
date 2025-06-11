@@ -1,3 +1,7 @@
+/*
+  This script is used to initialize the analytics library via a script tag.
+*/
+
 // Include our external dependencies!
 import { init, watch } from "./analytics";
 
