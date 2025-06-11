@@ -54,7 +54,8 @@ analytics.init("your-uuid-goes-here");
 To use hash navigation, pass the `navType:"hash"` parameter and _watch_ the hash changes.
 
 ```javascript
-analytics.init({uuid:"your-uuid-goes-here", navType:"hash"}).watch();
+analytics.init({uuid:"your-uuid-goes-here", navType:"hash"});
+analytics.watch();
 ```
 
 ## Advanced Usage

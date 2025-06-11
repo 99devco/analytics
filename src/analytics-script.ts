@@ -23,7 +23,8 @@ analytics.init({
   uuid,
   navType: navType as "hash" | "history",
   apiUrl,
-}).watch();
+});
+analytics.watch();
 
 // Expose the analytics library as a global variable
 window.nndev = analytics;
