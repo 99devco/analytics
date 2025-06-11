@@ -1,7 +1,7 @@
 {
   "name": "@99devco/analytics",
   "description": "A privacy and security focused Typescript/JavaScript library for tracking website traffic for only $1 per month.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "rimraf dist && tsc && vite build && vite build -c script.vite.config.ts",
+    "build": "rimraf dist && tsc && vite build && vite build -c script.vite.config.ts && tsc --emitDeclarationOnly",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
     "docs": "typedoc --options typedoc-markdown.js",
