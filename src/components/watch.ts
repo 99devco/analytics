@@ -1,5 +1,7 @@
 /**
  * @category Core
+ * @module Watch
+ * @description Provides functionality to automatically track page views during navigation
  */
 
 // Include external dependencies
@@ -7,30 +9,36 @@ import { getConfig, setConfig } from "./config";
 import getURL from "./get-url";
 import { recordView } from "./record-view";
 
-/** Array of cleanup functions for event listeners */
+/** 
+ * Array of cleanup functions for event listeners.
+ * Used to maintain references to all active watchers for cleanup.
+ */
 const unwatchers:Array<()=>any> = [];
 
 /**
  * Starts watching for navigation changes and records page views automatically.
+ * Supports both hash-based and History API-based navigation.
  * 
  * @example
  * ```typescript
- * 
- * // Start watching for navigation changes using the default navigation type or one previously set during init()
+ * // Start watching using default navigation type from init()
  * watch();
  * 
- * // Alternatively, Start watching for hash (or history) navigation changes…
+ * // Start watching hash-based navigation
  * const unwatcher = watch("hash");
  * 
- * // and stop watching for navigation changes
+ * // Start watching History API navigation
+ * const unwatcher = watch("history");
+ * 
+ * // Stop watching
  * unwatcher();
  * ```
  * 
- * @throws {Error} If navigation type is 'history' (not yet implemented)
- * @returns {() => void} A function that removes the hash or history watcher applied by watch()
+ * @param navType - Optional navigation type to use ("hash" or "history")
+ * @returns A function that removes the watcher when called
  */
 export function watch(navType?: "hash" | "history"):()=>void {
-
+  // Set or get the navigation type configuration
   if (navType) {
     setConfig({ navType });
   }
@@ -40,31 +48,63 @@ export function watch(navType?: "hash" | "history"):()=>void {
 
   let unwatcher = () => {};
 
-  if (navType === "hash") {
-    // Capture the current URL to use as the referrer later
+  // Create a closure to maintain referrer state and handle URL changes
+  const handleUrlChange = (() => {
+    // Store the initial URL as the first referrer
     let referrer = getURL();
-    function nndevWatchListener () {
+    return () => {
       const url = getURL();
       recordView(url, referrer);
       referrer = url;
     };
-    window.addEventListener("hashchange", nndevWatchListener);
+  })();
+
+  if (navType === "hash") {
+    // Hash-based navigation: Watch for hashchange events
+    window.addEventListener("hashchange", handleUrlChange);
     unwatcher = function () {
-      window.removeEventListener("hashchange", nndevWatchListener);
+      window.removeEventListener("hashchange", handleUrlChange);
     }
     unwatchers.push(unwatcher);
   } else if (navType === "history") {
-    throw new Error(`TODO: Implement the history watch functionality`);
+    // History API navigation: Watch for popstate events (back/forward navigation)
+    window.addEventListener("popstate", handleUrlChange);
+    
+    // Intercept pushState and replaceState to catch programmatic navigation
+    const originalPushState = window.history.pushState;
+    const originalReplaceState = window.history.replaceState;
+    
+    // Override pushState to trigger analytics
+    window.history.pushState = function() {
+      originalPushState.apply(this, arguments as any);
+      handleUrlChange();
+    };
+    
+    // Override replaceState to trigger analytics
+    window.history.replaceState = function() {
+      originalReplaceState.apply(this, arguments as any);
+      handleUrlChange();
+    };
+    
+    // Create cleanup function to restore original behavior
+    unwatcher = function () {
+      window.removeEventListener("popstate", handleUrlChange);
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+    }
+    unwatchers.push(unwatcher);
   }
   return unwatcher;
 }
 
 /**
- * Stops watching for navigation changes and cleans up event listeners.
+ * Stops watching for navigation changes and cleans up all event listeners.
+ * This will remove all watchers created by watch() and restore any overridden
+ * browser APIs to their original state.
  * 
  * @example
  * ```typescript
- * // Stop watching for navigation changes
+ * // Stop all navigation watching
  * unwatch();
  * ```
  */
