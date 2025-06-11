@@ -65,11 +65,7 @@ See the [official 99dev documentation page](https://99.dev/docs?umd_source=npmjs
 
 The 99dev analytics snippet is built with Typescript and includes type definitions throughout.
 
-- **`init(uuid:string, options?:{})`**: Tracks when a page is viewed.
-
-- **`recordView(url?:string, referrer?:string)`**: Tracks the current or specified page.
-
-- **`watch(options?:{})`**: Monitors the specified navigation mechanism for changes.
+Typescript/Javascript API docs (via Typedocs) are available here - https://99devco.github.io/analytics/modules/analytics.html
 
 ## Contributing
 
