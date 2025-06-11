@@ -10,4 +10,8 @@ It is NOT intended to be used as part of the actual 99dev analytics package.
 // Include our external dependencies!
 import * as analytics from "./analytics";
 
-analytics.init("some-uuid-goes-here", {navType:"hash"}).watch();
+analytics.init({
+  uuid:"some-uuid-goes-here",
+  navType:"hash",
+  apiUrl:"https://99dev-proxy.yourdomain.com"
+}).watch();
