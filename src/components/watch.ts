@@ -3,7 +3,7 @@
  */
 
 // Include external dependencies
-import { getConfig } from "./config";
+import { getConfig, setConfig } from "./config";
 import getURL from "./get-url";
 import { recordView } from "./record-view";
 
@@ -12,34 +12,51 @@ const unwatchers:Array<()=>any> = [];
 
 /**
  * Starts watching for navigation changes and records page views automatically.
- * Currently supports 'hash' navigation type. 'history' navigation type is planned.
  * 
  * @example
  * ```typescript
- * // Start watching for hash navigation changes
+ * 
+ * // Start watching for navigation changes using the default navigation type or one previously set during init()
  * watch();
+ * 
+ * // Alternatively, Start watching for hash (or history) navigation changes…
+ * const unwatcher = watch("hash");
+ * 
+ * // and stop watching for navigation changes
+ * unwatcher();
  * ```
  * 
  * @throws {Error} If navigation type is 'history' (not yet implemented)
+ * @returns {() => void} A function that removes the hash or history watcher applied by watch()
  */
-export function watch():void {
-  const { nav_type } = getConfig();
+export function watch(navType?: "hash" | "history"):()=>void {
 
-  if (nav_type === "hash") {
+  if (navType) {
+    setConfig({ navType });
+  }
+  else {
+    navType = getConfig().navType;
+  }
+
+  let unwatcher = () => {};
+
+  if (navType === "hash") {
     // Capture the current URL to use as the referrer later
     let referrer = getURL();
-    function nndev_listener () {
+    function nndevWatchListener () {
       const url = getURL();
       recordView(url, referrer);
       referrer = url;
     };
-    window.addEventListener("hashchange", nndev_listener);
-    unwatchers.push(function () {
-      window.removeEventListener("hashchange", nndev_listener);
-    });
-  } else if (nav_type === "history") {
+    window.addEventListener("hashchange", nndevWatchListener);
+    unwatcher = function () {
+      window.removeEventListener("hashchange", nndevWatchListener);
+    }
+    unwatchers.push(unwatcher);
+  } else if (navType === "history") {
     throw new Error(`TODO: Implement the history watch functionality`);
   }
+  return unwatcher;
 }
 
 /**

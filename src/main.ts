@@ -8,7 +8,6 @@ It is NOT intended to be used as part of the actual 99dev analytics package.
 */
 
 // Include our external dependencies!
-import { init, watch } from "./analytics";
+import * as analytics from "./analytics";
 
-init("some-uuid-goes-here", {navType:"hash"});
-watch();
+analytics.init("some-uuid-goes-here", {navType:"hash"}).watch();

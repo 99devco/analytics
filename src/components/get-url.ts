@@ -10,8 +10,7 @@ import { getConfig } from "./config";
  * The function follows this priority order:
  * 1. 99dev page meta tag
  * 2. Canonical link
- * 3. Hash navigation (if enabled)
- * 4. Natural navigation (default)
+ * 3. Hash or History browser API (per configuration)
  * 
  * @returns The current page URL path (without origin)
  * 
@@ -43,6 +42,6 @@ export default function getURL() {
   if (navType === "hash")
     return window.location.hash.substring(1).split("?")[0]; // Drop the leading "#" and any query parameters
 
-  // Default - Natural navigation
+  // Default - History navigation
   return window.location.pathname;
 }

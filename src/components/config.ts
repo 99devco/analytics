@@ -10,7 +10,7 @@ export interface AnalyticsConfig {
   /** Unique identifier for your site */
   uuid: string,
   /** Navigation type to watch for page changes */
-  navType: "history" | "hash" | "natural",
+  navType: "history" | "hash",
   /** API endpoint for analytics data */
   apiUrl: string,
 }
@@ -18,7 +18,7 @@ export interface AnalyticsConfig {
 /** Default configuration values */
 let config:AnalyticsConfig = {
   uuid: "",
-  navType: "natural",
+  navType: "history",
   apiUrl: "https://api.99.dev",
 };
 

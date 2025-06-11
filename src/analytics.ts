@@ -6,19 +6,13 @@
  * 
  * @example
  * ```ts
- * import { init, recordView, watch, unwatch } from '@99devco/analytics';
+ * import * as analytics from '@99devco/analytics';
  * 
- * // Initialize the analytics
- * init('your-site-uuid');
- * 
- * // Record a page view
- * recordView();
- * 
- * // Start watching for navigation changes
- * watch();
+ * // Initialize the analytics and watch for navigation changes
+ * const unwatcher = analytics.init('your-site-uuid').watch();
  * 
  * // Stop watching for navigation changes
- * unwatch();
+ * unwatcher();
  * ```
  */
 
