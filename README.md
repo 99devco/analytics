@@ -1,12 +1,12 @@
 # 99dev Analytics
 
-<!-- ![99dev logo](./public/99dev_banner.jpg) -->
+![99dev logo](./public/99dev_logo_350x183.jpg)
 
-**99dev** is a suite of no-frills web services designed for indie makers and small-scale projects. We offer simple and affordable tools, starting at just $1 a month. With **99dev Analytics**, you can track website metrics and interactions effortlessly. Start for free and pay as your needs grow.
+**99dev** provides privacy and security focused web traffic analytics for only $1 per month. No pricing tiers, no fenced off premium features, and no misleading fractional pricing.
 
 ## Getting Started
 
-You can play around with 99dev analytics on the [demo page](https://demo.99.dev).
+You can play around with 99dev analytics on the [live demo page](https://demo.99.dev).
 
 When you're ready to track your own sites, risk free, [create an account](https://app.99.dev/#/account-creation) and install the snippet using the instructions below.
 
@@ -37,7 +37,7 @@ const analytics = require('@99devco/analytics');
 Install via CDN:
 
 ```html
-<script src="https://cdn.99.dev/99dev.js"></script>
+<script src="https://cdn.99.dev/analytics.js"></script>
 <script>
   const analytics = window.Analytics;
 </script>
@@ -59,11 +59,11 @@ analytics.init("your-uuid-goes-here", {nav_type:"hash").watch();
 
 ## Advanced Usage
 
-See the [official 99dev documentation page](https://99.dev/docs/) for further details about supported metas, canonicals, etc.
+See the [official 99dev documentation page](https://99.dev/docs?umd_source=npmjs.com) for further details about cybersecurity, metas, canonicals, etc.
 
 ## API
 
-See this repository's Typescript definitions for details.
+The 99dev analytics snippet is built with Typescript and includes type definitions throughout.
 
 - **`init(uuid:string, options?:{})`**: Tracks when a page is viewed.
 
