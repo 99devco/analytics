@@ -1,7 +1,6 @@
 /**
  * @category Core
- * @module Watch
- * @description Provides functionality to automatically track page views during navigation
+ * @remarks Provides functionality to automatically track page views during navigation
  */
 
 // Include external dependencies

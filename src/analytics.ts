@@ -9,10 +9,12 @@
  * import * as analytics from '@99devco/analytics';
  * 
  * // Initialize the analytics and watch for navigation changes
- * const unwatcher = analytics.init('your-site-uuid').watch();
+ * analytics.init('your-site-uuid')
+ * const unwatcher = analytics.watch();
  * 
  * // Stop watching for navigation changes
  * unwatcher();
+ * 
  * ```
  */
 

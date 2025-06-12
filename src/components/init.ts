@@ -60,7 +60,7 @@ export interface CompleteInitOptions extends InitOptions {
  * });
  * ```
  */
-export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitOptions): any {
+export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitOptions): void {
   let settings: Partial<AnalyticsConfig>;
   
   if (typeof uuidOrConfig === 'string') {
@@ -88,7 +88,4 @@ export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitO
   if (shouldRecordView) {
     recordView();
   }
-
-  // @ts-ignore
-  return this; // this is a hack to allow chaining of methods
 }

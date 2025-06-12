@@ -14,4 +14,5 @@ analytics.init({
   uuid:"some-uuid-goes-here",
   navType:"hash",
   apiUrl:"https://99dev-proxy.yourdomain.com"
-}).watch();
+});
+analytics.watch();
