@@ -11,8 +11,8 @@ It is NOT intended to be used as part of the actual 99dev analytics package.
 import * as analytics from "./analytics";
 
 analytics.init({
-  uuid:"some-uuid-goes-here",
-  navType:"hash",
-  apiUrl:"https://99dev-proxy.yourdomain.com"
+  uuid: "45cb85ab-1e27-4db4-b3e1-468e8a1e32fc",
+  // navType: "hash",
+  apiUrl: "http://localhost:3000",
 });
 analytics.watch();

@@ -1,7 +1,7 @@
 {
   "name": "@99devco/analytics",
   "description": "A privacy and security focused Typescript/JavaScript library for tracking website traffic for only $1 per month.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "repository": {
     "type": "git",
@@ -14,7 +14,8 @@
   "type": "module",
   "browser": "./dist/analytics.es.js",
   "files": [
-    "/dist"
+    "/dist",
+    "shas.json"
   ],
   "main": "./dist/analytics.umd.js",
   "module": "./dist/analytics.es.js",
@@ -27,15 +28,17 @@
       "browser": "./dist/analytics.es.js",
       "default": "./dist/analytics.es.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./shas.json": "./shas.json"
   },
   "scripts": {
     "dev": "vite",
-    "build": "rimraf dist && tsc && vite build && vite build -c script.vite.config.ts && tsc --emitDeclarationOnly",
+    "build": "rimraf dist && tsc && vite build && vite build -c script.vite.config.ts && tsc --emitDeclarationOnly && node scripts/generate-sri.js",
     "preview": "vite preview",
     "prepublishOnly": "npm run build",
     "docs": "typedoc --options typedoc-markdown.js",
-    "docs:html": "typedoc --options typedoc-html.js"
+    "docs:html": "typedoc --options typedoc-html.js",
+    "generate-sri": "node scripts/generate-sri.js"
   },
   "author": "99dev",
   "license": "MIT",
