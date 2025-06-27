@@ -9,6 +9,7 @@ import {
 } from "./config";
 import { recordView } from "./record-view";
 import { watch } from "./watch";
+import { log } from "./logger";
 
 /**
  * Configuration options for initializing the analytics library.
@@ -81,6 +82,8 @@ export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitO
 
   // cache the config values
   const config = setConfig(settings);
+
+  log(JSON.stringify({config}, null, 2));
 
   // record the current page, unless the options toggle it off
   if (settings.recordView !== false) {

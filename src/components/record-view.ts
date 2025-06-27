@@ -5,6 +5,7 @@
 import { getConfig } from "./config";
 import getURL from "./get-url";
 import objToQps from "./obj-to-qps";
+import { log } from "./logger";
 
 /**
  * Records a page view in the analytics system.
@@ -35,8 +36,11 @@ export function recordView (url?:string, referrer?:string):void {
 
   // Ignore page refreshes if the config is set to not track them
   if (!trackPageRefreshes && pageView.url === pageView.referrer) {
+    log("Page refresh detected, skipping page view record.");
     return;
   }
+
+  log(JSON.stringify({pageView}, null, 2));
 
   // Cache the pCount / Page Count for subsequent page view saves.
   cachePCount(pageView.pcount);
@@ -45,6 +49,10 @@ export function recordView (url?:string, referrer?:string):void {
   cacheReferrer(pageView.url);
 
   // Load the tracking pixel / send the analytics event
+  if (!uuid) {
+    log("No UUID found, skipping tracking pixel load.");
+    return;
+  }
   const trkpxl = document.createElement("img");
   trkpxl.setAttribute("alt", "");
   trkpxl.setAttribute("aria-hidden", "true");

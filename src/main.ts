@@ -14,4 +14,5 @@ analytics.init({
   uuid: "baac2fb6-25b2-4ea6-abc7-2619dc064ffa",
   // navType: "history",
   apiUrl: "http://localhost:3000",
+  debug: true,
 });

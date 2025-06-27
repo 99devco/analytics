@@ -17,6 +17,8 @@ export interface AnalyticsConfig {
   normalizeUrls: boolean,
   /** Whether to track page refreshes as views */
   trackPageRefreshes: boolean,
+  /** Whether to debug logs */
+  debug: boolean,
 }
 
 /** Default configuration values */
@@ -26,6 +28,7 @@ let config:AnalyticsConfig = {
   apiUrl: "https://api.99.dev",
   normalizeUrls: true,
   trackPageRefreshes: false,
+  debug: false,
 };
 
 /**
