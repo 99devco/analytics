@@ -10,7 +10,7 @@ export interface AnalyticsConfig {
   /** Unique identifier for your site */
   uuid: string,
   /** Navigation type to watch for page changes */
-  navType: "history" | "hash",
+  navType: "natural" | "history" | "hash",
   /** API endpoint for analytics data */
   apiUrl: string,
   /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters */
@@ -20,7 +20,7 @@ export interface AnalyticsConfig {
 /** Default configuration values */
 let config:AnalyticsConfig = {
   uuid: "",
-  navType: "history",
+  navType: "natural",
   apiUrl: "https://api.99.dev",
   normalizeUrls: true,
 };
@@ -29,8 +29,9 @@ let config:AnalyticsConfig = {
  * Updates the analytics configuration with new values
  * @param newConfig - Partial configuration object containing values to update
  */
-export const setConfig = (newConfig:Partial<AnalyticsConfig>) => {
+export const setConfig = (newConfig:Partial<AnalyticsConfig>):AnalyticsConfig => {
   config = { ...config, ...newConfig };
+  return config;
 };
 
 /**

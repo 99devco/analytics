@@ -74,7 +74,7 @@ export default function getURL() {
       url = ["/", url].join("");
 
     // Remove trailing slash
-    if (url[url.length - 1] === "/")
+    if (url.length > 1 && url[url.length - 1] === "/")
       url = url.slice(0, -1);
 
     // Remove trailing file extension

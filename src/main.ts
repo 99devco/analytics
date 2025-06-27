@@ -15,4 +15,3 @@ analytics.init({
   navType: "history",
   apiUrl: "http://localhost:3000",
 });
-analytics.watch();

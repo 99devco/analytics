@@ -48,15 +48,9 @@ export function watch(navType?: "hash" | "history"):()=>void {
   let unwatcher = () => {};
 
   // Create a closure to maintain referrer state and handle URL changes
-  const handleUrlChange = (() => {
-    // Store the initial URL as the first referrer
-    let referrer = getURL();
-    return () => {
-      const url = getURL();
-      recordView(url, referrer);
-      referrer = url;
-    };
-  })();
+  const handleUrlChange = function () {
+    recordView();
+  }
 
   if (navType === "hash") {
     // Hash-based navigation: Watch for hashchange events

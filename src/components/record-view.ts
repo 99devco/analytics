@@ -23,14 +23,21 @@ import objToQps from "./obj-to-qps";
  */
 export function recordView (url?:string, referrer?:string):void {
   const urlToRecord = url || getURL();
-  const { uuid, apiUrl } = getConfig();
+  const { uuid, apiUrl, navType } = getConfig();
 
+  // Format the Page View data
   const pageView = {
     url: urlToRecord,
     referrer: referrer || getReferrer(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     pcount: getPCount(),
   };
+
+  // If the URL was provided (overloaded) or if History or Hash routing is used,
+  // cache the URL as the referrer for subsequent page view saves.
+  if (url || navType === "hash" || navType === "history") {
+    cacheReferrer(urlToRecord);
+  }
 
   // Load the tracking pixel / send the analytics event
   const trkpxl = document.createElement("img");
@@ -51,9 +58,30 @@ export function recordView (url?:string, referrer?:string):void {
  * Gets the referrer path relative to the current origin
  * @private
  */
-function getReferrer():string {
+function getReferrer(referrerOverload?:string):string {
+  // If a referrer overload is provided, cache it and return it
+  if (referrerOverload) {
+    sessionStorage.setItem("99referrer", referrerOverload);
+    return referrerOverload;
+  }
+
+  // Otherwise, check for a stored referrer in Session Storage
+  const storedReferrer = sessionStorage.getItem("99referrer");
+  if (storedReferrer) {
+    return storedReferrer;
+  }
+
+  // Otherwise, get the referrer from document / headers.
   const split = window.document.referrer.split(window.location.origin);
   return split[split.length-1] || "";
+}
+
+/**
+ * Saved a referrer value to Session Storage. Necessary for History and Hash routing.
+ * @private
+ */
+function cacheReferrer(referrer:string):void {
+  sessionStorage.setItem("99referrer", referrer);
 }
 
 /**

@@ -8,6 +8,7 @@ import {
   type AnalyticsConfig
 } from "./config";
 import { recordView } from "./record-view";
+import { watch } from "./watch";
 
 /**
  * Configuration options for initializing the analytics library.
@@ -25,6 +26,9 @@ export interface InitOptions extends Partial<AnalyticsConfig> {
 
   /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters. Default is true. */
   normalizeUrls?: boolean;
+
+  /** Whether to add a watcher to the analytics library. Default is true. */
+  addWatcher?: boolean;
 }
 
 /**
@@ -81,7 +85,7 @@ export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitO
   }
 
   // cache the config values
-  setConfig(settings);
+  const config = setConfig(settings);
 
   // record the current page, unless the options toggle it off
   const shouldRecordView = typeof uuidOrConfig === 'string' 
@@ -90,5 +94,14 @@ export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitO
 
   if (shouldRecordView) {
     recordView();
+  }
+
+  // add a has or history watcher, unless the options toggle it off
+  const shouldAddWatcher = typeof uuidOrConfig === 'string' 
+    ? options?.addWatcher !== false
+    : uuidOrConfig.addWatcher !== false;
+
+  if (shouldAddWatcher && (config.navType === "hash" || config.navType === "history")) {
+    watch();
   }
 }
