@@ -26,7 +26,6 @@ const unwatchers:Array<()=>any> = [];
  * unwatcher();
  * ```
  * 
- * @param navType - Optional navigation type to use ("hash" or "history")
  * @returns A function that removes the watcher when called
  */
 export function watch():()=>void {

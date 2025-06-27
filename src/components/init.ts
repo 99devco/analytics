@@ -22,8 +22,8 @@ export interface InitOptions extends Partial<AnalyticsConfig> {
   /** The API URL to record traffic to. Default is https://api.99.dev. */
   apiUrl?: string;
 
-  /** The navigation type to use. Default is 'history'. */
-  navType?: "hash" | "history";
+  /** The navigation type to use. Default is 'natural'. */
+  navType?: "natural" | "history" | "hash";
 
   /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters. Default is true. */
   normalizeUrls?: boolean;

@@ -8,12 +8,26 @@
  * ```ts
  * import * as analytics from '@99devco/analytics';
  * 
- * // Initialize the analytics and watch for navigation changes
+ * // Initialize the analytics - minimal example
  * analytics.init('your-site-uuid')
- * const unwatcher = analytics.watch();
  * 
- * // Stop watching for navigation changes
- * unwatcher();
+ * // Initialize the analytics - minimal example for hash or history navigation
+ * // This automatically adds a Hash or History API watcher.
+ * analytics.init('your-site-uuid', {
+ *   navType: 'hash', // or 'history'
+ * });
+ * 
+ * // Initialize the analytics with all available options
+ * analytics.init({
+ *   uuid: 'your-site-uuid',
+ *   apiUrl: 'https://api.99.dev',
+ *   navType: 'hash',
+ *   recordView: false,
+ *   trackPageRefreshes: true,
+ *   normalizeUrls: false,
+ *   debug: true,
+ * });
+ * 
  * 
  * ```
  */
