@@ -17,12 +17,18 @@ const script = document.currentScript || document.querySelector("script[src*='99
 const uuid = script?.getAttribute("data-site-uuid") || "";
 const apiUrl = script?.getAttribute("data-api-url") || "https://api.99.dev";
 const navType = script?.getAttribute("data-watch") || "natural";
+const debug = !!script?.getAttribute("data-debug") || false;
+const trackPageRefreshes = !!script?.getAttribute("data-track-page-refreshes") || false;
+const normalizeUrls = !!script?.getAttribute("data-normalize-urls") || true;
 
 // Call the analytics library
 analytics.init({
   uuid,
   navType: navType as "natural" | "hash" | "history",
   apiUrl,
+  debug,
+  trackPageRefreshes,
+  normalizeUrls
 });
 
 // Expose the analytics library as a global variable
