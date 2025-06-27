@@ -4,8 +4,7 @@
  */
 
 // Include external dependencies
-import { getConfig, setConfig } from "./config";
-import getURL from "./get-url";
+import { getConfig } from "./config";
 import { recordView } from "./record-view";
 
 /** 
@@ -21,42 +20,24 @@ const unwatchers:Array<()=>any> = [];
  * @example
  * ```typescript
  * // Start watching using default navigation type from init()
- * watch();
- * 
- * // Start watching hash-based navigation
- * const unwatcher = watch("hash");
- * 
- * // Start watching History API navigation
- * const unwatcher = watch("history");
+ * const unwatcher = watch();
  * 
  * // Stop watching
  * unwatcher();
  * ```
  * 
- * @param navType - Optional navigation type to use ("hash" or "history")
  * @returns A function that removes the watcher when called
  */
-export function watch(navType?: "hash" | "history"):()=>void {
-  // Set or get the navigation type configuration
-  if (navType) {
-    setConfig({ navType });
-  }
-  else {
-    navType = getConfig().navType;
-  }
+export function watch():()=>void {
+
+  const { navType } = getConfig();
 
   let unwatcher = () => {};
 
   // Create a closure to maintain referrer state and handle URL changes
-  const handleUrlChange = (() => {
-    // Store the initial URL as the first referrer
-    let referrer = getURL();
-    return () => {
-      const url = getURL();
-      recordView(url, referrer);
-      referrer = url;
-    };
-  })();
+  const handleUrlChange = function () {
+    recordView();
+  }
 
   if (navType === "hash") {
     // Hash-based navigation: Watch for hashchange events

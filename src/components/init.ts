@@ -8,6 +8,8 @@ import {
   type AnalyticsConfig
 } from "./config";
 import { recordView } from "./record-view";
+import { watch } from "./watch";
+import { log } from "./logger";
 
 /**
  * Configuration options for initializing the analytics library.
@@ -20,8 +22,14 @@ export interface InitOptions extends Partial<AnalyticsConfig> {
   /** The API URL to record traffic to. Default is https://api.99.dev. */
   apiUrl?: string;
 
-  /** The navigation type to use. Default is 'history'. */
-  navType?: "hash" | "history";
+  /** The navigation type to use. Default is 'natural'. */
+  navType?: "natural" | "history" | "hash";
+
+  /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters. Default is true. */
+  normalizeUrls?: boolean;
+
+  /** Whether to add a watcher to the analytics library. Default is true if Hash or History navType is used. */
+  addWatcher?: boolean;
 }
 
 /**
@@ -61,31 +69,29 @@ export interface CompleteInitOptions extends InitOptions {
  * ```
  */
 export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitOptions): void {
-  let settings: Partial<AnalyticsConfig>;
+  let settings: Partial<InitOptions>;
   
   if (typeof uuidOrConfig === 'string') {
     // If first parameter is a string, use it as UUID
-    settings = { uuid: uuidOrConfig };
-    if (options) {
-      if (options.navType) settings.navType = options.navType;
-      if (options.apiUrl) settings.apiUrl = options.apiUrl;
-    }
+    settings = options ? options : {};
+    settings.uuid = uuidOrConfig;
   } else {
     // If first parameter is options object
-    settings = { uuid: uuidOrConfig.uuid };
-    if (uuidOrConfig.navType) settings.navType = uuidOrConfig.navType;
-    if (uuidOrConfig.apiUrl) settings.apiUrl = uuidOrConfig.apiUrl;
+    settings = uuidOrConfig
   }
 
   // cache the config values
-  setConfig(settings);
+  const config = setConfig(settings);
+
+  log(JSON.stringify({config}, null, 2));
 
   // record the current page, unless the options toggle it off
-  const shouldRecordView = typeof uuidOrConfig === 'string' 
-    ? options?.recordView !== false
-    : uuidOrConfig.recordView !== false;
-
-  if (shouldRecordView) {
+  if (settings.recordView !== false) {
     recordView();
+  }
+
+  // add a has or history watcher, unless the options toggle it off
+  if (settings.addWatcher !== false && (config.navType === "hash" || config.navType === "history")) {
+    watch();
   }
 }
