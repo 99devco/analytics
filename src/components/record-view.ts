@@ -22,22 +22,27 @@ import objToQps from "./obj-to-qps";
  * ```
  */
 export function recordView (url?:string, referrer?:string):void {
-  const urlToRecord = url || getURL();
-  const { uuid, apiUrl, navType } = getConfig();
+  // Unpack config settings
+  const { uuid, apiUrl, trackPageRefreshes } = getConfig();
 
   // Format the Page View data
   const pageView = {
-    url: urlToRecord,
+    url: url || getURL(),
     referrer: referrer || getReferrer(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    pcount: getPCount(),
+    pcount: getPCount() + 1,
   };
 
-  // If the URL was provided (overloaded) or if History or Hash routing is used,
-  // cache the URL as the referrer for subsequent page view saves.
-  if (url || navType === "hash" || navType === "history") {
-    cacheReferrer(urlToRecord);
+  // Ignore page refreshes if the config is set to not track them
+  if (!trackPageRefreshes && pageView.url === pageView.referrer) {
+    return;
   }
+
+  // Cache the pCount / Page Count for subsequent page view saves.
+  cachePCount(pageView.pcount);
+
+  // Cache the URL as the referrer for subsequent page view saves.
+  cacheReferrer(pageView.url);
 
   // Load the tracking pixel / send the analytics event
   const trkpxl = document.createElement("img");
@@ -85,11 +90,17 @@ function cacheReferrer(referrer:string):void {
 }
 
 /**
- * Gets and increments the page view count for the current session
+ * Gets the page view count for the current session
  * @private
  */
 function getPCount():number {
-  const pcount = parseInt(sessionStorage.getItem("99pcount") || "") || 1;
-  sessionStorage.setItem("99pcount", (pcount+1).toString())
-  return pcount;
+  return parseInt(sessionStorage.getItem("99pcount") || "") || 0;
+}
+
+/**
+ * Saves a new pCount / Page Count value into storage
+ * @private
+ */
+function cachePCount(pCount:number):void {
+  sessionStorage.setItem("99pcount", pCount.toString());
 }

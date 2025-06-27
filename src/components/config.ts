@@ -15,6 +15,8 @@ export interface AnalyticsConfig {
   apiUrl: string,
   /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters */
   normalizeUrls: boolean,
+  /** Whether to track page refreshes as views */
+  trackPageRefreshes: boolean,
 }
 
 /** Default configuration values */
@@ -23,6 +25,7 @@ let config:AnalyticsConfig = {
   navType: "natural",
   apiUrl: "https://api.99.dev",
   normalizeUrls: true,
+  trackPageRefreshes: false,
 };
 
 /**

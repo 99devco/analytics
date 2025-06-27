@@ -27,7 +27,7 @@ export interface InitOptions extends Partial<AnalyticsConfig> {
   /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters. Default is true. */
   normalizeUrls?: boolean;
 
-  /** Whether to add a watcher to the analytics library. Default is true. */
+  /** Whether to add a watcher to the analytics library. Default is true if Hash or History navType is used. */
   addWatcher?: boolean;
 }
 
@@ -68,40 +68,27 @@ export interface CompleteInitOptions extends InitOptions {
  * ```
  */
 export function init(uuidOrConfig: string | CompleteInitOptions, options?: InitOptions): void {
-  let settings: Partial<AnalyticsConfig>;
+  let settings: Partial<InitOptions>;
   
   if (typeof uuidOrConfig === 'string') {
     // If first parameter is a string, use it as UUID
-    settings = { uuid: uuidOrConfig };
-    if (options) {
-      if (options.navType) settings.navType = options.navType;
-      if (options.apiUrl) settings.apiUrl = options.apiUrl;
-    }
+    settings = options ? options : {};
+    settings.uuid = uuidOrConfig;
   } else {
     // If first parameter is options object
-    settings = { uuid: uuidOrConfig.uuid };
-    if (uuidOrConfig.navType) settings.navType = uuidOrConfig.navType;
-    if (uuidOrConfig.apiUrl) settings.apiUrl = uuidOrConfig.apiUrl;
+    settings = uuidOrConfig
   }
 
   // cache the config values
   const config = setConfig(settings);
 
   // record the current page, unless the options toggle it off
-  const shouldRecordView = typeof uuidOrConfig === 'string' 
-    ? options?.recordView !== false
-    : uuidOrConfig.recordView !== false;
-
-  if (shouldRecordView) {
+  if (settings.recordView !== false) {
     recordView();
   }
 
   // add a has or history watcher, unless the options toggle it off
-  const shouldAddWatcher = typeof uuidOrConfig === 'string' 
-    ? options?.addWatcher !== false
-    : uuidOrConfig.addWatcher !== false;
-
-  if (shouldAddWatcher && (config.navType === "hash" || config.navType === "history")) {
+  if (settings.addWatcher !== false && (config.navType === "hash" || config.navType === "history")) {
     watch();
   }
 }

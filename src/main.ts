@@ -12,6 +12,6 @@ import * as analytics from "./analytics";
 
 analytics.init({
   uuid: "baac2fb6-25b2-4ea6-abc7-2619dc064ffa",
-  navType: "history",
+  // navType: "history",
   apiUrl: "http://localhost:3000",
 });
