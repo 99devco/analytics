@@ -13,6 +13,8 @@ export interface AnalyticsConfig {
   navType: "history" | "hash",
   /** API endpoint for analytics data */
   apiUrl: string,
+  /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters */
+  normalizeUrls: boolean,
 }
 
 /** Default configuration values */
@@ -20,6 +22,7 @@ let config:AnalyticsConfig = {
   uuid: "",
   navType: "history",
   apiUrl: "https://api.99.dev",
+  normalizeUrls: true,
 };
 
 /**

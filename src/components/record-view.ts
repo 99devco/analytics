@@ -25,17 +25,19 @@ export function recordView (url?:string, referrer?:string):void {
   const urlToRecord = url || getURL();
   const { uuid, apiUrl } = getConfig();
 
+  const pageView = {
+    url: urlToRecord,
+    referrer: referrer || getReferrer(),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    pcount: getPCount(),
+  };
+
   // Load the tracking pixel / send the analytics event
   const trkpxl = document.createElement("img");
   trkpxl.setAttribute("alt", "");
   trkpxl.setAttribute("aria-hidden", "true");
   trkpxl.style.position = "absolute";
-  trkpxl.src = encodeURI(`${apiUrl}/mian/${uuid}/tpxl.gif?${objToQps({
-    url: urlToRecord,
-    referrer: referrer || getReferrer(),
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    pcount: getPCount(),
-  })}`);
+  trkpxl.src = encodeURI(`${apiUrl}/mian/${uuid}/tpxl.gif?${objToQps(pageView)}`);
   trkpxl.addEventListener("load", function () {
     trkpxl.parentNode?.removeChild(trkpxl);
   });
@@ -51,7 +53,6 @@ export function recordView (url?:string, referrer?:string):void {
  */
 function getReferrer():string {
   const split = window.document.referrer.split(window.location.origin);
-  console.log(split[split.length-1]);
   return split[split.length-1] || "";
 }
 

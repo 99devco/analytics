@@ -22,6 +22,9 @@ export interface InitOptions extends Partial<AnalyticsConfig> {
 
   /** The navigation type to use. Default is 'history'. */
   navType?: "hash" | "history";
+
+  /** Whether to normalize URLS to remove trailing slashes, file extensions, and query parameters. Default is true. */
+  normalizeUrls?: boolean;
 }
 
 /**
