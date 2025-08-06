@@ -7,6 +7,9 @@ import getURL from "./get-url";
 import objToQps from "./obj-to-qps";
 import { log } from "./logger";
 
+// @ts-ignore
+const version = __VERSION__;
+
 /**
  * Records a page view in the analytics system.
  * 
@@ -31,7 +34,8 @@ export function recordView (url?:string, referrer?:string):void {
     url: url || getURL(),
     referrer: referrer || getReferrer(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    pcount: Infinity
+    pcount: Infinity,
+    version
   };
 
   // Ignore page refreshes if the config is set to not track them
