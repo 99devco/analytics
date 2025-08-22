@@ -7,6 +7,7 @@ import { log } from "./logger";
 import { getReferrer } from "./get-referrer";
 import { sizeOf } from "./size-of";
 import { uuid } from "./uuid";
+import getURL from "./get-url";
 
 // @ts-ignore
 const version = __VERSION__;
@@ -76,7 +77,7 @@ export function recordEvent(
 
   const evt: AnalyticsEvent = {
     type,
-    url: ctx?.url ?? globalThis.location?.href,
+    url: ctx?.url ?? getURL(),
     referrer: ctx?.referrer ?? getReferrer(),
     props,
     idempotency: ctx?.idempotency ?? uuid(),
