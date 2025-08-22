@@ -5,6 +5,8 @@
 import { getConfig } from "./config";
 import { log } from "./logger";
 import { getReferrer } from "./get-referrer";
+import { sizeOf } from "./size-of";
+import { uuid } from "./uuid";
 
 // @ts-ignore
 const version = __VERSION__;
@@ -40,25 +42,11 @@ export interface AnalyticsBatch {
   /** Transport hint ("beacon" | "fetch_keepalive" | "xhr") */
   src?: string;
   /** SDK/library version */
-  sdk?: string | number;
+  version?: string | number;
 }
 
 // In-memory queue (not persisted across reloads)
 const QUEUE: AnalyticsEvent[] = [];
-
-function sizeOf(str: string): number {
-  return new TextEncoder().encode(str).length;
-}
-
-function uuid(): string {
-  // RFC4122-ish v4 UUID without crypto dependency
-  let d = Date.now();
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (d + Math.random() * 16) % 16 | 0;
-    d = Math.floor(d / 16);
-    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-  });
-}
 
 /**
  * Records a user-defined analytics event. Events are queued and periodically
@@ -121,7 +109,7 @@ export function flushEvents(_force = false): void {
   const ENDPOINT = `${apiUrl}/mian-events/${siteUUID}`;
 
   // Build a batch under the size limit
-  const batch: AnalyticsBatch = { events: [], src: "beacon", sdk: version };
+  const batch: AnalyticsBatch = { events: [], src: "beacon", version: version };
   for (const e of QUEUE) {
     const test = JSON.stringify({ ...batch, events: [...batch.events, e] });
     if (sizeOf(test) > MAX_BYTES) break;
