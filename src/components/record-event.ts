@@ -20,33 +20,33 @@ const version = __VERSION__;
 const MAX_BYTES = 60000;
 
 /**
- * Event item captured by the client SDK.
+ * Event packet sent to the API.
  */
 export interface AnalyticsEvent {
   /** Event name, e.g., "checkout_started" */
-  type: string;
+  event_name: string;
   /** Page URL where the event occurred */
-  url?: string;
-  /** Referrer URL */
-  referrer?: string;
+  url: string;
   /** Page view count for the current session */
-  pcount?: number;
+  pcount: number;
   /** User-defined props; keep shallow/JSON-serializable */
-  props?: Record<string, unknown>;
+  event_details?: Record<string, unknown>;
   /** Client-generated GUID to deduplicate server-side */
   idempotency: string;
 }
 
 /**
- * Batch payload sent to the collector.
+ * Batch payload sent to the API.
  */
 export interface AnalyticsBatch {
   /** Events in this batch */
   events: AnalyticsEvent[];
   /** Transport hint ("beacon" | "fetch_keepalive" | "xhr") */
-  src?: string;
+  transport: string;
   /** SDK/library version */
-  version?: string | number;
+  script_version: string;
+  /** Timezone of the client */
+  timezone: string;
 }
 
 // In-memory queue (not persisted across reloads)
@@ -58,18 +58,16 @@ const QUEUE: AnalyticsEvent[] = [];
  *
  * @param type - Event name (e.g., "cta_click")
  * @param props - Optional user-defined properties (plain JSON)
- * @param ctx - Optional context overriding defaults (url, referrer, idempotency)
  *
  * @example
  * ```ts
  * recordEvent("video_play", { id: "abc123", position: 0 });
- * recordEvent("cta_click", { ctaId: "signup-hero" }, { url: "https://example.com" });
+ * recordEvent("cta_click", { ctaId: "signup-hero" });
  * ```
  */
 export function recordEvent(
-  type: string,
-  props: Record<string, unknown> = {},
-  ctx?: { url?: string; referrer?: string; idempotency?: string }
+  event_name: string,
+  event_details?: Record<string, unknown>,
 ): void {
   const { uuid: siteUUID } = getConfig();
 
@@ -79,12 +77,11 @@ export function recordEvent(
   }
 
   const evt: AnalyticsEvent = {
-    type,
-    url: ctx?.url ?? getURL(),
-    referrer: ctx?.referrer ?? getReferrer(),
-    pcount: getPCount(ctx?.referrer ?? getReferrer(), true),
-    props,
-    idempotency: ctx?.idempotency ?? uuid(),
+    event_name,
+    event_details,
+    url: getURL(),
+    pcount: getPCount(getReferrer(), true),
+    idempotency: uuid(),
   };
 
   QUEUE.push(evt);
@@ -114,7 +111,12 @@ export function flushEvents(_force = false): void {
   const ENDPOINT = `${apiUrl}/mian-events/${siteUUID}`;
 
   // Build a batch under the size limit
-  const batch: AnalyticsBatch = { events: [], src: "beacon", version: version };
+  const batch: AnalyticsBatch = {
+    events: [],
+    transport: "beacon",
+    script_version: version,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+  };
   for (const e of QUEUE) {
     const test = JSON.stringify({ ...batch, events: [...batch.events, e] });
     if (sizeOf(test) > MAX_BYTES) break;
@@ -136,13 +138,12 @@ export function flushEvents(_force = false): void {
 
   if (!sent) {
     // Fallback for older browsers or if sendBeacon refused
-    batch.src = "fetch_keepalive";
+    batch.transport = "fetch_keepalive";
     fetch(ENDPOINT, {
       method: "POST",
       body: JSON.stringify(batch),
       headers: { "Content-Type": "application/json" },
       keepalive: true,
-      // credentials: 'include' // if relying on cookies
     }).catch(() => { /* fire-and-forget */ });
   }
 
