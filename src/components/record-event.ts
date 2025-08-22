@@ -4,15 +4,10 @@
 
 import { getConfig } from "./config";
 import { log } from "./logger";
+import { getReferrer } from "./get-referrer";
 
 // @ts-ignore
 const version = __VERSION__;
-
-/**
- * Schema version for event payloads.
- * Bump when making breaking changes to the event wire format.
- */
-const SCHEMA_VERSION = 1 as const;
 
 /**
  * Maximum payload bytes per beacon. Keep conservative to avoid per-browser caps.
@@ -24,20 +19,12 @@ const MAX_BYTES = 60000;
  * Event item captured by the client SDK.
  */
 export interface AnalyticsEvent {
-  /** Schema version */
-  v: typeof SCHEMA_VERSION;
   /** Event name, e.g., "checkout_started" */
   type: string;
-  /** Epoch milliseconds */
-  ts: number;
-  /** Session id (optional) */
-  sid?: string;
-  /** User id (optional) */
-  uid?: string;
   /** Page URL where the event occurred */
-  page?: string;
+  url?: string;
   /** Referrer URL */
-  ref?: string;
+  referrer?: string;
   /** User-defined props; keep shallow/JSON-serializable */
   props?: Record<string, unknown>;
   /** Client-generated GUID to deduplicate server-side */
@@ -48,11 +35,9 @@ export interface AnalyticsEvent {
  * Batch payload sent to the collector.
  */
 export interface AnalyticsBatch {
-  /** Schema version */
-  v: typeof SCHEMA_VERSION;
   /** Events in this batch */
   events: AnalyticsEvent[];
-  /** Transport hint (“beacon” | “fetch_keepalive” | “xhr”) */
+  /** Transport hint ("beacon" | "fetch_keepalive" | "xhr") */
   src?: string;
   /** SDK/library version */
   sdk?: string | number;
@@ -81,18 +66,18 @@ function uuid(): string {
  *
  * @param type - Event name (e.g., "cta_click")
  * @param props - Optional user-defined properties (plain JSON)
- * @param ctx - Optional context overriding defaults (sid, uid, page, ref, idempotency)
+ * @param ctx - Optional context overriding defaults (url, referrer, idempotency)
  *
  * @example
  * ```ts
  * recordEvent("video_play", { id: "abc123", position: 0 });
- * recordEvent("cta_click", { ctaId: "signup-hero" }, { sid: "s-1" });
+ * recordEvent("cta_click", { ctaId: "signup-hero" }, { url: "https://example.com" });
  * ```
  */
 export function recordEvent(
   type: string,
   props: Record<string, unknown> = {},
-  ctx?: { sid?: string; uid?: string; page?: string; ref?: string; idempotency?: string }
+  ctx?: { url?: string; referrer?: string; idempotency?: string }
 ): void {
   const { uuid: siteUUID } = getConfig();
 
@@ -102,13 +87,9 @@ export function recordEvent(
   }
 
   const evt: AnalyticsEvent = {
-    v: SCHEMA_VERSION,
     type,
-    ts: Date.now(),
-    sid: ctx?.sid,
-    uid: ctx?.uid,
-    page: ctx?.page ?? globalThis.location?.href,
-    ref: ctx?.ref ?? globalThis.document?.referrer,
+    url: ctx?.url ?? globalThis.location?.href,
+    referrer: ctx?.referrer ?? getReferrer(),
     props,
     idempotency: ctx?.idempotency ?? uuid(),
   };
@@ -140,7 +121,7 @@ export function flushEvents(_force = false): void {
   const ENDPOINT = `${apiUrl}/mian-events/${siteUUID}`;
 
   // Build a batch under the size limit
-  const batch: AnalyticsBatch = { v: SCHEMA_VERSION, events: [], src: "beacon", sdk: version };
+  const batch: AnalyticsBatch = { events: [], src: "beacon", sdk: version };
   for (const e of QUEUE) {
     const test = JSON.stringify({ ...batch, events: [...batch.events, e] });
     if (sizeOf(test) > MAX_BYTES) break;

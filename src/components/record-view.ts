@@ -6,6 +6,7 @@ import { getConfig } from "./config";
 import getURL from "./get-url";
 import objToQps from "./obj-to-qps";
 import { log } from "./logger";
+import { getReferrer } from "./get-referrer";
 
 // @ts-ignore
 const version = __VERSION__;
@@ -74,27 +75,7 @@ export function recordView (url?:string, referrer?:string):void {
   document.body.appendChild(trkpxl);
 }
 
-/**
- * Gets the referrer path relative to the current origin
- * @private
- */
-function getReferrer(referrerOverload?:string):string {
-  // If a referrer overload is provided, cache it and return it
-  if (referrerOverload) {
-    sessionStorage.setItem("99referrer", referrerOverload);
-    return referrerOverload;
-  }
 
-  // Otherwise, check for a stored referrer in Session Storage
-  const storedReferrer = sessionStorage.getItem("99referrer");
-  if (storedReferrer) {
-    return storedReferrer;
-  }
-
-  // Otherwise, get the referrer from document / headers.
-  const split = window.document.referrer.split(window.location.origin);
-  return split[split.length-1] || "";
-}
 
 /**
  * Saved a referrer value to Session Storage. Necessary for History and Hash routing.
