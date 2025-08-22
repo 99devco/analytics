@@ -7,6 +7,7 @@ import getURL from "./get-url";
 import objToQps from "./obj-to-qps";
 import { log } from "./logger";
 import { getReferrer } from "./get-referrer";
+import { cachePCount, getPCount } from "./pcount";
 
 // @ts-ignore
 const version = __VERSION__;
@@ -83,44 +84,4 @@ export function recordView (url?:string, referrer?:string):void {
  */
 function cacheReferrer(referrer:string):void {
   sessionStorage.setItem("99referrer", referrer);
-}
-
-/**
- * Gets the page view count for the current session
- * @private
- */
-function getPCount(referrer:string):number {
-  // Read the pCount from session storage.
-  const session_pcount = parseInt(sessionStorage.getItem("99pcount") || "") || 0;
-
-  // If natural, external entry detected, reset pCount.
-  const entry_detected = session_pcount === 0 && (!referrer || referrer.indexOf("http") === 0);
-  if (entry_detected) {
-    log("Entry detected, resetting pCount");
-    return 1;
-  }
-
-  const local_pcount = parseInt(localStorage.getItem("99pcount") || "") || 0;
-  const new_tab_detected = session_pcount === 0 && referrer && referrer.indexOf("http") === -1;
-  if (new_tab_detected) {
-    log("New tab detected! Reading pCount from local storage.");
-    return local_pcount + 1;
-  }
-
-  if (local_pcount > session_pcount) {
-    log("Out-of-tab navigation detected, resetting pCount from local storage.");
-    return local_pcount + 1;
-  }
-
-  log("Normal in-page navigation detected, increment pcount from session storage.");
-  return session_pcount + 1;
-}
-
-/**
- * Saves a new pCount / Page Count value into storage
- * @private
- */
-function cachePCount(pCount:number):void {
-  sessionStorage.setItem("99pcount", pCount.toString());
-  localStorage.setItem("99pcount", pCount.toString());
 }

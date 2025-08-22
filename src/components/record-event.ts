@@ -8,6 +8,7 @@ import { getReferrer } from "./get-referrer";
 import { sizeOf } from "./size-of";
 import { uuid } from "./uuid";
 import getURL from "./get-url";
+import { getPCount } from "./pcount";
 
 // @ts-ignore
 const version = __VERSION__;
@@ -28,6 +29,8 @@ export interface AnalyticsEvent {
   url?: string;
   /** Referrer URL */
   referrer?: string;
+  /** Page view count for the current session */
+  pcount?: number;
   /** User-defined props; keep shallow/JSON-serializable */
   props?: Record<string, unknown>;
   /** Client-generated GUID to deduplicate server-side */
@@ -79,6 +82,7 @@ export function recordEvent(
     type,
     url: ctx?.url ?? getURL(),
     referrer: ctx?.referrer ?? getReferrer(),
+    pcount: getPCount(ctx?.referrer ?? getReferrer(), true),
     props,
     idempotency: ctx?.idempotency ?? uuid(),
   };
