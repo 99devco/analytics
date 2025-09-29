@@ -22,9 +22,20 @@ import { getConfig } from "./config";
  * log(`Page view recorded for URL: ${currentUrl}`);
  * ```
  */
-export function log(message: string): void {
+export function log(...args: Parameters<typeof console.log>): void {
   const { debug } = getConfig();
   if (debug) {
-    console.log(message);
+    const rawStack = new Error().stack;
+    const caller = rawStack
+      ?.split("\n")
+      .slice(2)
+      .find((line) => line.trim().length > 0)
+      ?.trim();
+
+    if (caller) {
+      console.log("⓽", ...args, `\n↳ ${caller}`);
+    } else {
+      console.log("⓽", ...args);
+    }
   }
 }

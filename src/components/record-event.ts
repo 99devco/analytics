@@ -85,6 +85,7 @@ export function recordEvent(
   };
 
   QUEUE.push(evt);
+  log("Event added to queue", evt)
 
   // Eager flush for higher volumes; otherwise timers/unload will pick it up.
   if (QUEUE.length >= 10) flushEvents();
