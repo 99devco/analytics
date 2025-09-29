@@ -10,9 +10,15 @@ It is NOT intended to be used as part of the actual 99dev analytics package.
 // Include our external dependencies!
 import * as analytics from "./analytics";
 
+// Initialize the analytics system
 analytics.init({
-  uuid: "baac2fb6-25b2-4ea6-abc7-2619dc064ffa",
+  uuid: "2486b5bc-1b13-4616-bbf5-1cf7c92db1ac",
   // navType: "history",
   apiUrl: "http://localhost:3000",
   debug: true,
 });
+
+// Expose the event recorder globally
+(window as any).recordEvent = analytics.recordEvent;
+
+

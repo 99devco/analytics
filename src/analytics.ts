@@ -34,4 +34,5 @@
 
 export * from "./components/init";
 export * from "./components/record-view";
+export * from "./components/record-event";
 export * from "./components/watch";

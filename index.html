@@ -6,7 +6,7 @@
     <title>@99dev/browser</title>
   </head>
   <body>
-    <h1>Hello</h1>
+    <h1>Navigation Testing</h1>
     <script type="module" src="/src/main.ts"></script>
     <a href="/page2.html">Page 2 (natural)</a>
     <a href="/page3.html">Page 3 (natural)</a>
@@ -16,5 +16,13 @@
     <hr>
     <button onclick="window.history.pushState({ url: '/page2' }, '', '/page2')">Page 2 (history)</button>
     <button onclick="window.history.pushState({ url: '/page3' }, '', '/page3')">Page 3 (history)</button>
+    <hr>
+    <hr>
+    <hr>
+    <h1>Event Testing</h1>
+    <button onclick="recordEvent('event 1')">Event 1</button>
+    <button onclick="recordEvent('event 2', { prop1: 'value1' })">Event 2 (with props)</button>
+    <button onclick="recordEvent('event 3')">Event 3</button>
+    <button onclick="recordEvent('event 4')">Event 4</button>
   </body>
 </html>
