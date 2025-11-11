@@ -148,6 +148,8 @@ export function flushEvents(_force = false): void {
     }).catch(() => { /* fire-and-forget */ });
   }
 
+  log("Events were sent to the server", batch);
+
   // If more remain (due to size cap), schedule the next micro-batch
   if (QUEUE.length > 0) {
     setTimeout(() => flushEvents(), 10);
