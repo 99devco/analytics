@@ -6,7 +6,7 @@ import { getConfig } from "./config";
 import getURL from "./get-url";
 import objToQps from "./obj-to-qps";
 import { log } from "./logger";
-import { getReferrer } from "./get-referrer";
+import { getReferrer, referrerStorageKeyActual, referrerStorageKeyRecord } from "./get-referrer";
 import { cachePCount, getPCount } from "./pcount";
 
 // @ts-ignore
@@ -31,23 +31,27 @@ export function recordView (url?:string, referrer?:string):void {
   // Unpack config settings
   const { uuid, apiUrl, trackPageRefreshes } = getConfig();
 
+  // Read the URL and referrer
+  const { actualUrl, recordUrl } = getURL();
+  const { actualReferrer, recordReferrer } = getReferrer();
+
   // Format the Page View data
   const pageView = {
-    url: url || getURL(),
-    referrer: referrer || getReferrer(),
+    url: url || recordUrl,
+    referrer: referrer || recordReferrer,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     pcount: Infinity,
     version
   };
 
   // Ignore page refreshes if the config is set to not track them
-  if (!trackPageRefreshes && pageView.url === pageView.referrer) {
+  if (!trackPageRefreshes && actualUrl === actualReferrer) {
     log("Page refresh detected, skipping page view record.");
     return;
   }
 
   // Determine the Page Count.
-  pageView.pcount = getPCount(pageView.referrer);
+  pageView.pcount = getPCount(actualReferrer);
 
   log(JSON.stringify({pageView}, null, 2));
 
@@ -55,7 +59,7 @@ export function recordView (url?:string, referrer?:string):void {
   cachePCount(pageView.pcount);
 
   // Cache the URL as the referrer for subsequent page view saves.
-  cacheReferrer(pageView.url);
+  cacheReferrer(actualUrl, pageView.url);
 
   // Load the tracking pixel / send the analytics event
   if (!uuid) {
@@ -82,6 +86,7 @@ export function recordView (url?:string, referrer?:string):void {
  * Saved a referrer value to Session Storage. Necessary for History and Hash routing.
  * @private
  */
-function cacheReferrer(referrer:string):void {
-  sessionStorage.setItem("99referrer", referrer);
+function cacheReferrer(actualReferrer:string, recordReferrer:string):void {
+  sessionStorage.setItem(referrerStorageKeyActual, actualReferrer);
+  sessionStorage.setItem(referrerStorageKeyRecord, recordReferrer);
 }

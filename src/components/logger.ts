@@ -33,9 +33,9 @@ export function log(...args: Parameters<typeof console.log>): void {
       ?.trim();
 
     if (caller) {
-      console.log("⓽", ...args, `\n↳ ${caller}`);
+      console.log("99Dev Says:\n", ...args, `\n↳ ${caller}`);
     } else {
-      console.log("⓽", ...args);
+      console.log("99Dev Says:\n", ...args);
     }
   }
 }

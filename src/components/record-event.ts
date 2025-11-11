@@ -79,8 +79,8 @@ export function recordEvent(
   const evt: AnalyticsEvent = {
     event_name,
     event_details,
-    url: getURL(),
-    pcount: getPCount(getReferrer(), true),
+    url: getURL().recordUrl,
+    pcount: getPCount(getReferrer().actualReferrer, true),
     idempotency: uuid(),
   };
 

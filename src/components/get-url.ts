@@ -4,6 +4,7 @@
 
 // Include external dependencies
 import { getConfig } from "./config";
+import { log } from "./logger";
 
 /**
  * Gets the current page URL based on navigation type and available meta information.
@@ -38,49 +39,63 @@ import { getConfig } from "./config";
  * getURL(); // returns "/custom-path"
  * ```
  */
-export default function getURL() {
+export default function getURL(): {actualUrl: string, recordUrl: string} {
+
+  // Unpack config settings
   const { navType, normalizeUrls } = getConfig();
+
+  // Prepare the strings for the actual URL and the URL to record.
+  // These can differ due to URL overloaded via canonical or 99Dev meta.
+  let actualUrl = "",
+      recordUrl = "";
 
   // Handle 99dev Page Meta
   const metaTag:HTMLMetaElement|null = document.querySelector('meta[name="99dev-page"]');
   if (metaTag && metaTag.content)
-    return metaTag.content.replace(window.location.origin,"");
+    recordUrl =  metaTag.content.replace(window.location.origin,"");
 
   // Handle Canonicals
-  const canonicalLink:HTMLLinkElement|null = document.querySelector("link[rel='canonical']");
-  if (canonicalLink && canonicalLink.href)
-      return canonicalLink.href.replace(window.location.origin,"");
-
-  let url = "";
+  else {
+    const canonicalLink:HTMLLinkElement|null = document.querySelector("link[rel='canonical']");
+    if (canonicalLink && canonicalLink.href)
+        recordUrl = canonicalLink.href.replace(window.location.origin,"");
+  }
 
   // Handle Hash
   if (navType === "hash")
-    url = window.location.hash.substring(1); // Drop the leading "#" and any query parameters
+    actualUrl = window.location.hash.substring(1); // Drop the leading "#" and any query parameters
   // Handle History API
   else  if (navType === "history" && window.history.state && window.history.state.url)
-    url = window.history.state.url;
+    actualUrl = window.history.state.url;
   // Default fallback
   else
-    url = window.location.pathname;
+    actualUrl = window.location.pathname;
 
   // URL formatting
   if (normalizeUrls) {
 
     // Remove query parameters
-    url = url.split("?")[0];
+    actualUrl = actualUrl.split("?")[0];
 
     // Ensure leading slash is present
-    if (url[0] !== "/")
-      url = ["/", url].join("");
+    if (actualUrl[0] !== "/")
+      actualUrl = ["/", actualUrl].join("");
 
     // Remove trailing slash
-    if (url.length > 1 && url[url.length - 1] === "/")
-      url = url.slice(0, -1);
+    if (actualUrl.length > 1 && actualUrl[actualUrl.length - 1] === "/")
+      actualUrl = actualUrl.slice(0, -1);
 
     // Remove trailing file extension
-    if (url.endsWith(".html"))
-      url = url.slice(0, -5);
+    if (actualUrl.endsWith(".html"))
+      actualUrl = actualUrl.slice(0, -5);
   }
 
-  return url;
+  // Ensure the URL to record is set
+  if (!recordUrl)
+    recordUrl = actualUrl;
+
+  // Log and return the results.
+  const ret =  { actualUrl, recordUrl };
+  log("getURL() results:", ret);
+  return ret;
 }
