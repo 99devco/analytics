@@ -14,19 +14,21 @@ import { recordView } from "./record-view";
 const unwatchers:Array<()=>any> = [];
 
 /**
- * Starts watching for navigation changes and records page views automatically.
- * Supports both hash-based and History API-based navigation.
- * 
+ * Starts monitoring client-side navigation and automatically calls `recordView`
+ * whenever the URL changes. The implementation adapts to the configured nav type:
+ *
+ * - `"hash"`: listens for `hashchange` events.
+ * - `"history"`: patches `pushState`/`replaceState` and listens for `popstate`.
+ * - `"natural"`: returns a no-op because full page loads already trigger views.
+ *
+ * @returns A cleanup function that detaches any listeners and restores patched APIs.
+ *
  * @example
  * ```typescript
- * // Start watching using default navigation type from init()
- * const unwatcher = watch();
- * 
- * // Stop watching
- * unwatcher();
+ * const stop = watch();
+ * // ...later
+ * stop();
  * ```
- * 
- * @returns A function that removes the watcher when called
  */
 export function watch():()=>void {
 
@@ -78,13 +80,11 @@ export function watch():()=>void {
 }
 
 /**
- * Stops watching for navigation changes and cleans up all event listeners.
- * This will remove all watchers created by watch() and restore any overridden
- * browser APIs to their original state.
- * 
+ * Removes every active watcher created via `watch()` and restores any patched
+ * History API methods. Useful when tearing down single-page apps or hot-reload.
+ *
  * @example
  * ```typescript
- * // Stop all navigation watching
  * unwatch();
  * ```
  */

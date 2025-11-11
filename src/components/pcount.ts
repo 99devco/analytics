@@ -3,8 +3,24 @@ import { log } from "./logger";
 const PCOUNT_KEY = "99pcount";
 
 /**
- * Gets the page view count for the current session
- * @private
+ * Derives the visitor's page-count for the current browsing context. The count
+ * is primarily read from `sessionStorage`, with `localStorage` used as a fallback
+ * to handle new tabs or browser restarts. Several heuristics are applied:
+ *
+ * - Fresh external entry (no stored count, referrer is empty or absolute URL)
+ *   resets the counter to `1`.
+ * - Opening an internal link in a new tab reuses the `localStorage` value.
+ * - When another tab has progressed further, its higher `localStorage` value
+ *   becomes the baseline to keep counts monotonic.
+ *
+ * @param referrer - The raw referrer path/URL to help detect external entries
+ * @param skipIncrement - When true, returns the existing count without adding one
+ * @returns The next page-count that should be associated with the view/event
+ *
+ * @example
+ * ```typescript
+ * const pcount = getPCount(document.referrer);
+ * ```
  */
 export function getPCount(referrer:string, skipIncrement:boolean = false):number {
   // Read the pCount from session storage.
@@ -35,7 +51,8 @@ export function getPCount(referrer:string, skipIncrement:boolean = false):number
 }
 
 /**
- * Saves a new pCount / Page Count value into storage
+ * Persists the supplied page-count to both session and local storage so reloads,
+ * new tabs, and other heuristics can make consistent decisions.
  * @private
  */
 export function cachePCount(pCount:number):void {

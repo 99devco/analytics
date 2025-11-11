@@ -53,11 +53,14 @@ export interface AnalyticsBatch {
 const QUEUE: AnalyticsEvent[] = [];
 
 /**
- * Records a user-defined analytics event. Events are queued and periodically
- * flushed using `navigator.sendBeacon()` with a fetch keepalive fallback.
+ * Queues a custom analytics event. Each event captures the canonical URL from
+ * `getURL()`, the current page-count, an idempotency UUID, and any optional
+ * JSON-serializable metadata you provide. Events accumulate in memory and are
+ * flushed in batches of up to 10 items (or sooner on lifecycle events) using
+ * `navigator.sendBeacon()` with a fetch keep-alive fallback.
  *
- * @param type - Event name (e.g., "cta_click")
- * @param props - Optional user-defined properties (plain JSON)
+ * @param event_name - Event name (e.g., `"cta_click"`)
+ * @param event_details - Optional user-defined properties/object payload
  *
  * @example
  * ```ts
@@ -92,11 +95,11 @@ export function recordEvent(
 }
 
 /**
- * Flushes queued events to the collector. Generally not necessary to call
- * manually—SDK will flush on interval and page lifecycle, but it is exposed
- * for advanced use.
+ * Sends the queued events to the collector endpoint. Normally triggered by
+ * timers or lifecycle hooks, but exposed publicly so apps can flush after
+ * critical flows (e.g., before redirecting away).
  *
- * @param force - Ignored in the current implementation; reserved for future use
+ * @param _force - Present for future behavior toggles; currently unused
  */
 export function flushEvents(_force = false): void {
   void _force;

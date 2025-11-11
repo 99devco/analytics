@@ -13,18 +13,29 @@ import { cachePCount, getPCount } from "./pcount";
 const version = __VERSION__;
 
 /**
- * Records a page view in the analytics system.
- * 
- * @param url - Optional URL to record. If not provided, the current page URL will be used
- * @param referrer - Optional referrer URL. If not provided, the document referrer will be used
- * 
+ * Records the current page view by collecting the normalized URL, referrer,
+ * timezone, SDK version, and calculated page-count, then dispatching a tracking
+ * pixel to the configured API endpoint.
+ *
+ * When called without overrides the function:
+ * 1. Reads `{ actualUrl, recordUrl }` from `getURL()` so canonical/meta overrides
+ *    are respected while still tracking refresh detection.
+ * 2. Reads `{ actualReferrer, recordReferrer }` from `getReferrer()` so the
+ *    recorded referrer can differ from the in-session navigation path.
+ * 3. Computes the page count via `getPCount()` to understand the visit depth.
+ * 4. Skips recording if a refresh is detected and `trackPageRefreshes` is false.
+ * 5. Persists the new `pcount` and referrer values for the next navigation.
+ *
+ * @param url - Optional override for the recorded URL path (defaults to `recordUrl`)
+ * @param referrer - Optional override for the recorded referrer path (defaults to `recordReferrer`)
+ *
  * @example
  * ```typescript
- * // Record current page view
+ * // Record the current page view using canonical/meta data
  * recordView();
- * 
- * // Record specific URL and referrer
- * recordView('https://example.com/page', 'https://example.com');
+ *
+ * // Record a virtual page view for in-app navigation
+ * recordView("/pricing", "/features");
  * ```
  */
 export function recordView (url?:string, referrer?:string):void {
@@ -83,7 +94,8 @@ export function recordView (url?:string, referrer?:string):void {
 
 
 /**
- * Saved a referrer value to Session Storage. Necessary for History and Hash routing.
+ * Persists both the literal navigation path and the canonical/meta override so the
+ * next invocation of `recordView()` can treat them as the prior referrer.
  * @private
  */
 function cacheReferrer(actualReferrer:string, recordReferrer:string):void {

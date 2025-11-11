@@ -7,36 +7,44 @@ import { getConfig } from "./config";
 import { log } from "./logger";
 
 /**
- * Gets the current page URL based on navigation type and available meta information.
- * The function follows this priority order:
- * 1. 99dev page meta tag
- * 2. Canonical link
- * 3. Hash or History browser API (per configuration)
- * 
- * For History API navigation, the function will:
- * - Use the current pathname
- * - Include search parameters if present
- * - Use state.url if available in the history state
- * 
- * @returns The current page URL path (without origin)
- * 
+ * Resolves the current page URL in two forms:
+ * - `actualUrl`: the path detected from browser navigation (hash/history/pathname)
+ * - `recordUrl`: the path that should be persisted, allowing canonical/meta overrides
+ *
+ * The record URL is derived using this order of precedence:
+ * 1. `<meta name="99dev-page" />`
+ * 2. `<link rel="canonical" />`
+ * 3. Fallback to the actual URL
+ *
+ * The actual URL honors the configured navigation type:
+ * - `"hash"`: uses `window.location.hash` without the leading `#`
+ * - `"history"`: prefers `window.history.state.url` when provided
+ * - `"natural"` (default): uses `window.location.pathname`
+ *
+ * When `normalizeUrls` is enabled the function removes query parameters, ensures a
+ * leading slash, trims trailing slashes, and drops `.html` extensions so both URLs
+ * share consistent formatting.
+ *
+ * @returns An object containing `{ actualUrl, recordUrl }`, both relative to the origin.
+ *
  * @example
  * ```typescript
- * // With meta tag
+ * const { actualUrl, recordUrl } = getURL();
+ *
+ * // Meta override
  * // <meta name="99dev-page" content="https://example.com/about">
- * getURL(); // returns "/about"
- * 
- * // With hash navigation
- * // URL: https://example.com/#/products
- * getURL(); // returns "/products"
- * 
- * // With History API
- * // URL: https://example.com/products?page=2
- * getURL(); // returns "/products
- * 
- * // With History API and state
- * // history.pushState({ url: '/custom-path' }, '', '/products')
- * getURL(); // returns "/custom-path"
+ * // → actualUrl === "/"
+ * // → recordUrl === "/about"
+ *
+ * // Hash navigation
+ * // URL: https://example.com/#/products?page=2
+ * // → actualUrl === "/products"
+ * // → recordUrl === "/products"
+ *
+ * // History state override
+ * // history.pushState({ url: "/custom-path" }, "", "/products")
+ * // → actualUrl === "/custom-path"
+ * // → recordUrl === "/custom-path"
  * ```
  */
 export default function getURL(): {actualUrl: string, recordUrl: string} {

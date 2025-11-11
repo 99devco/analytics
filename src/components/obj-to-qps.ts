@@ -3,14 +3,17 @@
  */
 
 /**
- * Converts an object to a query parameter string.
- * 
- * @param paramObj - Object containing key-value pairs to convert to query parameters
- * @returns URL-encoded query parameter string
- * 
+ * Converts a flat object into a query-parameter string by concatenating keys
+ * and values with `=` and joining pairs with `&`. The function assumes the
+ * values are already safe for transport—it does not perform URL encoding.
+ *
+ * @param paramObj - Object containing primitive key-value pairs to serialize
+ * @returns A string such as `key=value&flag=true`
+ *
  * @example
  * ```typescript
- * objToQps({ page: 'home', id: 123 }); // returns "page=home&id=123"
+ * objToQps({ page: "home", id: 123 }); // "page=home&id=123"
+ * objToQps({ search: encodeURIComponent("99 dev") });
  * ```
  */
 export default function objToQps (paramObj:{}) {
