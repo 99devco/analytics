@@ -8,6 +8,7 @@ import objToQps from "./obj-to-qps";
 import { log } from "./logger";
 import { getReferrer, referrerStorageKeyActual, referrerStorageKeyRecord } from "./get-referrer";
 import { cachePCount, getPCount } from "./pcount";
+import { getUtmParams } from "./utm";
 
 // @ts-ignore
 const version = __VERSION__;
@@ -15,7 +16,8 @@ const version = __VERSION__;
 /**
  * Records the current page view by collecting the normalized URL, referrer,
  * timezone, SDK version, and calculated page-count, then dispatching a tracking
- * pixel to the configured API endpoint.
+ * pixel to the configured API endpoint. UTM parameters are automatically
+ * included when present in the URL (or recovered from the current session).
  *
  * When called without overrides the function:
  * 1. Reads `{ actualUrl, recordUrl }` from `getURL()` so canonical/meta overrides
@@ -47,12 +49,19 @@ export function recordView (url?:string, referrer?:string):void {
   const { actualReferrer, recordReferrer } = getReferrer();
 
   // Format the Page View data
-  const pageView = {
+  const pageViewBase = {
     url: url || recordUrl,
     referrer: referrer || recordReferrer,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     pcount: Infinity,
     version
+  };
+
+  // Attach session-cached UTMs to every page view for campaign attribution.
+  const utmParams = getUtmParams();
+  const pageView = {
+    ...pageViewBase,
+    ...utmParams,
   };
 
   // Ignore page refreshes if the config is set to not track them
