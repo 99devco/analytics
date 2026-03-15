@@ -8,25 +8,108 @@
     <!-- Include Bootstrap CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   </head>
-  <body>
-    <h1>Navigation Testing</h1>
+  <body class="bg-body-tertiary">
+    <main class="container py-4 py-md-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+          <header class="mb-4">
+            <h1 class="h2 mb-1">@99dev/browser Test Harness</h1>
+            <p class="text-body-secondary mb-0">Use this page to test navigation and event tracking behavior.</p>
+          </header>
+
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <h2 class="h5 card-title mb-3">Tracker UUID</h2>
+              <form id="uuid-form" class="row g-3 align-items-end">
+                <div class="col-12 col-md">
+                  <label for="uuid-input" class="form-label">Site UUID</label>
+                  <input id="uuid-input" name="uuid" class="form-control" type="text" placeholder="Enter UUID for testing" autocomplete="off" required>
+                  <div class="form-text">This value is stored in local storage and used by <code>main.ts</code>.</div>
+                </div>
+                <div class="col-12 col-md-auto">
+                  <button type="submit" class="btn btn-primary w-100">Save and Refresh</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <h2 class="h5 card-title mb-3">Navigation Testing</h2>
+              <p class="text-body-secondary small mb-3">
+                Use these controls to test how tracking behaves for full page loads, hash-only changes, and History API updates.
+              </p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <a class="btn btn-outline-primary" href="/page2.html">Natural: page2.html (full reload)</a>
+                <a class="btn btn-outline-primary" href="/page3.html">Natural: page3.html (full reload)</a>
+              </div>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <a class="btn btn-outline-secondary" href="#/page2">Hash: #/page2 (no reload)</a>
+                <a class="btn btn-outline-secondary" href="#/page3">Hash: #/page3 (no reload)</a>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-dark" onclick="window.history.pushState({ url: '/page2' }, '', '/page2')">History API: /page2 (pushState)</button>
+                <button type="button" class="btn btn-outline-dark" onclick="window.history.pushState({ url: '/page3' }, '', '/page3')">History API: /page3 (pushState)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <h2 class="h5 card-title mb-3">UTM Parameter Testing</h2>
+              <p class="text-body-secondary small mb-3">
+                Each button reloads this page with preset UTM query parameters so you can verify campaign attribution capture.
+              </p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <a class="btn btn-outline-info" href="/?utm_source=newsletter&utm_medium=email&utm_campaign=spring_launch&utm_content=hero_cta&utm_term=analytics_sdk">UTM Set A: Newsletter Email</a>
+                <a class="btn btn-outline-info" href="/?utm_source=google&utm_medium=cpc&utm_campaign=brand_search&utm_content=text_ad_1&utm_term=analytics+tracking">UTM Set B: Paid Search</a>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-outline-info" href="/?utm_source=partner&utm_medium=referral&utm_campaign=integration_launch&utm_content=docs_link&utm_term=fastify">UTM Set C: Partner Referral</a>
+                <a class="btn btn-outline-secondary" href="/">Clear query params (no UTM)</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h2 class="h5 card-title mb-3">Event Testing</h2>
+              <p class="text-body-secondary small mb-3">
+                These buttons call <code>recordEvent(...)</code> with the shown payload. Use your network tab to inspect the queued event payload.
+              </p>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-success" onclick="recordEvent('event 1')">recordEvent("event 1")</button>
+                <button type="button" class="btn btn-success" onclick="recordEvent('event 2', { prop1: 'value1' })">recordEvent("event 2", { prop1: "value1" })</button>
+                <button type="button" class="btn btn-success" onclick="recordEvent('event 3')">recordEvent("event 3")</button>
+                <button type="button" class="btn btn-success" onclick="recordEvent('event 4')">recordEvent("event 4")</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const UUID_STORAGE_KEY = "99dev-test-uuid";
+      const uuidForm = document.getElementById("uuid-form");
+      const uuidInput = document.getElementById("uuid-input");
+      const storedUuid = localStorage.getItem(UUID_STORAGE_KEY) || "";
+
+      if (uuidInput instanceof HTMLInputElement) {
+        uuidInput.value = storedUuid;
+      }
+
+      if (uuidForm && uuidInput instanceof HTMLInputElement) {
+        uuidForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const nextUuid = uuidInput.value.trim();
+          localStorage.setItem(UUID_STORAGE_KEY, nextUuid);
+          window.location.reload();
+        });
+      }
+    </script>
+
     <script type="module" src="/src/main.ts"></script>
-    <a href="/page2.html">Page 2 (natural)</a>
-    <a href="/page3.html">Page 3 (natural)</a>
-    <hr>
-    <a href="#/page2">Page 2 (hash)</a>
-    <a href="#/page3">Page 3 (hash)</a>
-    <hr>
-    <button onclick="window.history.pushState({ url: '/page2' }, '', '/page2')">Page 2 (history)</button>
-    <button onclick="window.history.pushState({ url: '/page3' }, '', '/page3')">Page 3 (history)</button>
-    <hr>
-    <hr>
-    <hr>
-    <h1>Event Testing</h1>
-    <button onclick="recordEvent('event 1')">Event 1</button>
-    <button onclick="recordEvent('event 2', { prop1: 'value1' })">Event 2 (with props)</button>
-    <button onclick="recordEvent('event 3')">Event 3</button>
-    <button onclick="recordEvent('event 4')">Event 4</button>
 
     <!-- Include Bootstrap JS via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
