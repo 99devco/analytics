@@ -82,6 +82,8 @@
                 <button type="button" class="btn btn-success" onclick="recordEvent('event 2', { prop1: 'value1' })">recordEvent("event 2", { prop1: "value1" })</button>
                 <button type="button" class="btn btn-success" onclick="recordEvent('event 3')">recordEvent("event 3")</button>
                 <button type="button" class="btn btn-success" onclick="recordEvent('event 4')">recordEvent("event 4")</button>
+                <button type="button" class="btn btn-danger" onclick="triggerRuntimeError()">Trigger Runtime Error</button>
+                <button type="button" class="btn btn-danger" onclick="triggerHttpError()">Trigger HTTP Error (httpbin 500)</button>
               </div>
             </div>
           </div>
@@ -90,6 +92,54 @@
     </main>
 
     <script>
+      // Global runtime error handler — captures uncaught errors and reports them
+      // via recordEvent so they appear in your 99dev dashboard. Use this pattern
+      // in production to track JavaScript errors across your site.
+      window.addEventListener('error', function (event) {
+        const error = event.error;
+        recordEvent('Runtime Error', {
+          message: event.message,
+          source: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          stack: error instanceof Error ? error.stack : undefined,
+          name: error instanceof Error ? error.name : undefined,
+        });
+      });
+
+      // Intentionally throws a TypeError to demonstrate error capture.
+      function triggerRuntimeError() {
+        const obj = undefined;
+        obj.nonExistentMethod();
+      }
+
+      // Makes a request to a public endpoint that reliably returns a 500 response.
+      // Demonstrates how to capture HTTP errors and report them to 99dev.
+      // httpbin.org is a public HTTP testing service with CORS support.
+      async function triggerHttpError() {
+        const url = 'https://httpbin.org/status/500';
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            const body = await response.text().catch(() => undefined);
+            recordEvent('HTTP Error', {
+              status: response.status,
+              statusText: response.statusText || body || undefined,
+              url: response.url,
+              body: body || undefined,
+            });
+          }
+        } catch (err) {
+          // Handles network-level failures (e.g. offline, DNS failure)
+          recordEvent('HTTP Error', {
+            status: 0,
+            statusText: 'Network Error',
+            url,
+            message: err instanceof Error ? err.message : String(err),
+          });
+        }
+      }
+
       const UUID_STORAGE_KEY = "99dev-test-uuid";
       const uuidForm = document.getElementById("uuid-form");
       const uuidInput = document.getElementById("uuid-input");
