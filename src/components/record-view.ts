@@ -97,7 +97,20 @@ export function recordView (url?:string, referrer?:string):void {
   trkpxl.addEventListener("error", function () {
     trkpxl.parentNode?.removeChild(trkpxl);
   });
-  document.body.appendChild(trkpxl);
+
+  const appendTrackingPixel = function ():boolean {
+    const root = document.body || document.documentElement;
+    if (!root) return false;
+    root.appendChild(trkpxl);
+    return true;
+  };
+
+  // Some integrations initialize before <body> exists (e.g. script in <head>).
+  if (!appendTrackingPixel() && document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function onDomReady() {
+      appendTrackingPixel();
+    }, { once: true });
+  }
 }
 
 
